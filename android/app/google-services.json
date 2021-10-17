@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "557259461363",
+    "project_id": "vantypesapp",
+    "storage_bucket": "vantypesapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557259461363:android:be9dd29fbe8e74cba35d86",
+        "android_client_info": {
+          "package_name": "com.example.vantypesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557259461363-1qok44sks39gcle5muvuuhlsbkrejuuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW9jJkA0KUdzwkZleA34K3rx48zLIDjAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "557259461363-1qok44sks39gcle5muvuuhlsbkrejuuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

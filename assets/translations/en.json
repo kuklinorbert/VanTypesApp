@@ -1,0 +1,61 @@
+{
+    "must_verify": "You must verify your phone number",
+    "send": "Send code",
+    "enter_sms": "Enter the code from the SMS",
+    "verify": "Verify",
+    "resend": "Resend Code",
+
+    "lang": "Language",
+    "en": "🇬🇧  English",
+    "hu": "🇭🇺  Hungarian",
+    "logout": "Logout",
+
+    "home": "Home",
+    "favourites": "Favourites",
+    "events": "Events",
+
+    "done": "Done",
+    "skip": "Skip",
+    "next": "Next",
+
+    "no_fav": "No favourites added yet!",
+
+    "search": "Search",
+    "search_long": "Search in the criptocurrency database",
+    "favourite_long": "Add criptocurrencies to your favourites",
+    "events_long": "Read about upcoming criptocurrency events",
+
+    "circ_supply": "Circulating supply: ",
+    "max_supply": "Max supply: ",
+    "highest": "All time high: ",
+    "num_exch": "Num exchanges: ",
+    "num_pairs": "Num pairs: ",
+    "num_pairs_unmap": "Num pairs unmapped: ",
+    "first_trade": "First trade: ",
+    "first_candle": "First candle: ",
+    "first_order": "First order book: ",
+    "rank": "Rank #",
+    "volume": "Volume: ",
+    "change": "Change: ",
+    "market_cap": "Market cap: ",
+    "dominance": "Dominance: ",
+    "date": "Date: ",
+
+    "active": "active",
+    "inactive": "inactive",
+    "dead": "dead",
+
+    "error_load": "Error loading items!",
+    "error_network": "No internet connection!",
+      "error_server": "Server error!",
+      "error_unexp": "Unexpected error!",
+      "error_search": "No items found!",
+
+      "checkauth_fail": "Authentication check failure",
+      "codesend_fail": "Code send failed!",
+      "logout_fail": "Logout failed",
+      "verify_fail" : "Verification failure",
+      "error_req": "Too many requests!" 
+
+
+}

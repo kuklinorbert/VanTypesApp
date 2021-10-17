@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
-import 'package:vantypesapp/features/domain/repositories/classifier_repository.dart';
+import 'package:vantypesapp/features/domain/repositories/detection_repository.dart';
 
 class Predict extends UseCase<List, Params> {
   final ClassifierRepository classifierRepository;

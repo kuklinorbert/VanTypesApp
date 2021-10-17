@@ -1,0 +1,61 @@
+{
+    "must_verify": "Kérjük adja meg a telefonszámát",
+    "send": "Kód küldése",
+    "enter_sms": "Írja be az SMS-ben kapott kódot",
+    "verify": "Megerősítés",
+    "resend": "Kód újraküldése",
+
+    "lang": "Nyelv",
+    "en": "🇬🇧  Angol",
+    "hu": "🇭🇺  Magyar",
+    "logout": "Kijelentkezés",
+
+    "home": "Otthon",
+    "favourites": "Kedvencek",
+    "events": "Események",
+
+    "done": "Kész",
+    "skip": "Kihagyás",
+    "next": "Következő",
+
+    "no_fav": "Nem lett még kedvenc hozzáadva!",
+
+    "search": "Keresés",
+    "search_long": "Keressen a kriptovaluta adatbázisban",
+    "favourite_long": "Adjon hozzá kritpovalutákat a kedvencei közé",
+    "events_long": "Olvasson a közelgő kriptovaluta eseményekről",
+
+    "circ_supply": "Forgalomban lévő kínálat: ",
+    "max_supply": "Teljes kínálat: ",
+    "highest": "Legmagasabb ár: ",
+    "num_exch": "Cserék száma: ",
+    "num_pairs": "Párok száma: ",
+    "num_pairs_unmap": "Feltérképezetlen párok száma: ",
+    "first_trade": "Első kereskedés: ",
+    "first_candle": "Első gyertya: ",
+    "first_order": "Első rendelési könyv: ",
+    "rank": "Helyezés #",
+    "volume": "Volumen: ",
+    "change": "Változás: ",
+    "market_cap": "Kapitalizáció: ",
+    "dominance": "Dominancia: ",
+    "date": "Dátum: ",
+
+    "active": "aktív",
+    "inactive": "inaktív",
+    "dead": "halott",
+
+    "error_load": "Hiba a betöltés közben!",
+    "error_network": "Nincs internet kapcsolat!",
+      "error_server": "Szerver hiba!",
+      "error_unexp": "Váratlan hiba történt!",
+    "error_search": "Nincs találat!",
+
+      "checkauth_fail": "Sikertelen authentikáció!",
+      "codesend_fail": "Nem sikerült elküldeni a kódot!",
+      "logout_fail": "Nem sikerült kijelentkezni!",
+      "verify_fail" : "Sikertelen verifikáció!",
+      "error_req": "Túl sok kérelem! Kérük próbálja később" 
+
+
+}

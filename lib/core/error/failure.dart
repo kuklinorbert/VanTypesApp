@@ -14,3 +14,11 @@ class PermissionFailure extends Failure {}
 class ImageFailure extends Failure {}
 
 class PredictionFailure extends Failure {}
+
+class LogInFailure extends Failure {}
+
+class LogOutFailure extends Failure {}
+
+class CheckAuthFailure extends Failure {}
+
+class NetworkFailure extends Failure {}
