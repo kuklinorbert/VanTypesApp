@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String inputEmail;
   String inputPassword;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _loginKey = GlobalKey<FormState>();
   AuthBloc authBloc;
 
   @override
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Form(
-        key: _formKey,
+        key: _loginKey,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -88,6 +88,8 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 style: Theme.of(context).textTheme.subtitle2,
                 decoration: InputDecoration(
+                  filled: true,
+                  border: OutlineInputBorder(),
                   hintText: "email_man".tr(),
                   labelText: "email".tr(),
                 ),
@@ -108,6 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 style: Theme.of(context).textTheme.subtitle2,
                 decoration: InputDecoration(
+                  filled: true,
+                  border: OutlineInputBorder(),
                   hintText: "password_man".tr(),
                   labelText: "password".tr(),
                 ),
@@ -126,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState.validate()) {
+                  if (_loginKey.currentState.validate()) {
                     authBloc.add(
                         LoginEvent(email: inputEmail, password: inputPassword));
                   }
@@ -136,8 +140,18 @@ class _LoginPageState extends State<LoginPage> {
                   style: Theme.of(context).textTheme.button,
                 ),
               ),
+              Divider(),
               SizedBox(
-                height: 15.0,
+                height: 10.0,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/register');
+                },
+                child: Text(
+                  "register".tr(),
+                  style: Theme.of(context).textTheme.button,
+                ),
               ),
             ],
           ),

@@ -267,7 +267,7 @@ class _DetectionPageState extends State<DetectionPage>
                     ),
                     //#TODO: UPLOAD BLOC
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: state.prediction.isNotEmpty ? () {} : null,
                       icon: Icon(Icons.file_upload),
                       label: Text("Upload image"),
                       style: ButtonStyle(

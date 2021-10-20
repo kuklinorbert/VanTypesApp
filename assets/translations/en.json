@@ -55,7 +55,47 @@
       "codesend_fail": "Code send failed!",
       "logout_fail": "Logout failed",
       "verify_fail" : "Verification failure",
-      "error_req": "Too many requests!" 
+      "error_req": "Too many requests!",
+
+
+      "greet": "Welcome",
+    "set_theme": "Change theme",
+    "set_loc": "Change language",
+    "email": "Email",
+    "email_man": "Email is mandatory",
+    "email_hint": "Enter the email",
+    "password": "Password",
+    "password_man": "Password is mandatory",
+    "password_hint": "Enter the password",
+
+    "login": "Login",
+    "loginfail": "Invalid credentials",
+    "logoutfail": "Failed to logout",
+    "authfail": "Failed to authenticate",
+
+    
+    "serverfailure": "Server failure",
+    "cachefailure": "Cache failure",
+    "pdffailure": "No cached data",
+
+    "unexp_error": "Unexcepted error",
+
+    "change_th": "Theme Changed!",
+    "change_loc": "Language Changed!",
+
+    "no_perm_stor": "No permissions for the storage",
+    "no_perm_cam": "No permissions for the camera",
+
+    "alert_notf": "Not found!",
+    "alert_cont": "No item found with the QR code!",
+    "alert_back": "Back",
+
+    "network_fail": "No internet connection!",
+
+    "start_down": "Starting download...",
+    "file_exists": "File already downloaded",
+    "down_compl": "Download complete",
+    "down_fail": "Download failed"
 
 
 }

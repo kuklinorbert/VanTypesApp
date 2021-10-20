@@ -2,13 +2,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vantypesapp/core/util/themes.dart';
 import 'package:vantypesapp/features/presentation/bloc/auth/auth_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
 import 'package:vantypesapp/features/presentation/pages/detection_page.dart';
 import 'package:vantypesapp/features/presentation/pages/favourites_page.dart';
-import 'package:vantypesapp/features/presentation/pages/gallery_page.dart';
+import 'package:vantypesapp/features/presentation/pages/categories_page.dart';
 import 'package:vantypesapp/features/presentation/pages/home_page.dart';
 import 'package:vantypesapp/features/presentation/widgets/navbar.dart';
+import 'package:vantypesapp/main.dart';
 
 import '../../../../injection_container.dart';
 
@@ -23,6 +27,7 @@ class _MainPageState extends State<MainPage> {
   AuthBloc authBloc;
   NavigationbarBloc navbarBloc;
   PageController _pageController;
+  bool isDark = darkNotifier.value;
 
   @override
   void initState() {
@@ -37,8 +42,14 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
+  _storeOnboardInfo(bool isDark) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDark', isDark);
+  }
+
   @override
   Widget build(BuildContext context) {
+    ThemeModel themeModel;
     return Scaffold(
         drawerEnableOpenDragGesture: false,
         drawer: Drawer(
@@ -46,8 +57,49 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.only(top: 50, left: 15),
             children: [
               Text(
-                FirebaseAuth.instance.currentUser.email,
+                FirebaseAuth.instance.currentUser.displayName,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Divider(),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "theme".tr(),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+              ),
+              ListTile(
+                title: Text(
+                  "dark_mode".tr(),
+                  style: TextStyle(fontSize: 16),
+                ),
+                trailing: ToggleSwitch(
+                  minHeight: 35,
+                  minWidth: 60,
+                  activeFgColor: Colors.green[300],
+                  activeBgColor: [Theme.of(context).backgroundColor],
+                  inactiveBgColor: Colors.grey[300],
+                  radiusStyle: true,
+                  totalSwitches: 2,
+                  cornerRadius: 25,
+                  initialLabelIndex: isDark ? 1 : 0,
+                  customIcons: [
+                    Icon(Icons.light_mode_outlined),
+                    Icon(Icons.dark_mode_outlined)
+                  ],
+                  onToggle: (index) {
+                    if (index == 0) {
+                      isDark = false;
+                    } else {
+                      isDark = true;
+                    }
+                    _storeOnboardInfo(isDark);
+                    darkNotifier.value = isDark;
+                  },
+                ),
               ),
               SizedBox(
                 height: 5,
@@ -134,7 +186,7 @@ class _MainPageState extends State<MainPage> {
               children: [
                 HomePage(),
                 DetectionPage(),
-                GalleryPage(),
+                CategoriesPage(),
                 FavouritesPage()
               ],
             )),

@@ -22,3 +22,17 @@ class LogOutFailure extends Failure {}
 class CheckAuthFailure extends Failure {}
 
 class NetworkFailure extends Failure {}
+
+class RegistrationFailure extends Failure {}
+
+class RegistrationInvalidEmailFailure extends Failure {}
+
+class RegistrationEmailAlreadyInUseFailure extends Failure {}
+
+class RegistrationWeakPasswordFailure extends Failure {}
+
+class RegistrationUsernameTakenFailure extends Failure {}
+
+class ItemsFailure extends Failure {}
+
+class NoMoreItemsFailure extends Failure {}
