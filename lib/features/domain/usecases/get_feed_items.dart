@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
 import 'package:vantypesapp/features/domain/entities/response.dart';
-import 'package:vantypesapp/features/domain/repositories/items_repository.dart';
+import 'package:vantypesapp/features/domain/repositories/feed_repository.dart';
 
-class GetItems extends UseCase<ItemsResponse, Params> {
-  final ItemsRepository itemsRepository;
+class GetFeedItems extends UseCase<ItemsResponse, Params> {
+  final FeedRepository feedRepository;
 
-  GetItems(this.itemsRepository);
+  GetFeedItems(this.feedRepository);
 
   @override
   Future<Either<Failure, ItemsResponse>> call(Params params) async {
-    return await itemsRepository.getItems(params.type, params.lastDocument);
+    return await feedRepository.getItems(params.type, params.lastDocument);
   }
 }
 

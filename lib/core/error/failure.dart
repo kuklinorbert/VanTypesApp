@@ -36,3 +36,7 @@ class RegistrationUsernameTakenFailure extends Failure {}
 class ItemsFailure extends Failure {}
 
 class NoMoreItemsFailure extends Failure {}
+
+class UploadFailure extends Failure {}
+
+class FavouritesFailure extends Failure {}

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tflite/tflite.dart';
-import 'package:vantypesapp/features/domain/usecases/load_model.dart';
 import 'package:vantypesapp/features/presentation/bloc/detection/detection_bloc.dart';
+import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
 
 import '../../../injection_container.dart';
 
@@ -180,9 +180,7 @@ class _DetectionPageState extends State<DetectionPage>
                               ? 'The type is ${state.prediction[0]['detectedClass']}!'
                               : 'No van detected!',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400))),
+                              fontSize: 18, fontWeight: FontWeight.w400))),
                   SizedBox(
                     height: 15,
                   ),
@@ -201,9 +199,9 @@ class _DetectionPageState extends State<DetectionPage>
               return false;
             }
           },
-          builder: (context, state) {
-            print("Masodik builder " + state.toString());
-            if (state is LoadedModelState) {
+          builder: (context, detectionState) {
+            print("Masodik builder " + detectionState.toString());
+            if (detectionState is LoadedModelState) {
               return Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -245,7 +243,8 @@ class _DetectionPageState extends State<DetectionPage>
                 ),
               );
             }
-            if (state is Prediction) {
+            if (detectionState is Prediction) {
+              UploadBloc uploadBloc = BlocProvider.of<UploadBloc>(context);
               return Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -253,6 +252,7 @@ class _DetectionPageState extends State<DetectionPage>
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
+                        uploadBloc.add(UploadResetEvent());
                         detectionBloc..add(RestartEvent());
                       },
                       icon: Icon(Icons.replay),
@@ -265,16 +265,34 @@ class _DetectionPageState extends State<DetectionPage>
                     SizedBox(
                       width: 20,
                     ),
-                    //#TODO: UPLOAD BLOC
-                    ElevatedButton.icon(
-                      onPressed: state.prediction.isNotEmpty ? () {} : null,
-                      icon: Icon(Icons.file_upload),
-                      label: Text("Upload image"),
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.all(20)),
-                        backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      ),
-                    ),
+                    BlocBuilder<UploadBloc, UploadState>(
+                        builder: (BuildContext context, uploadState) {
+                      if (uploadState is UploadInitial) {
+                        return ElevatedButton.icon(
+                            onPressed: detectionState.prediction.isNotEmpty
+                                ? () {
+                                    uploadBloc.add(UploadImageEvent(
+                                        image: detectionBloc.img,
+                                        type: detectionState.prediction[0]
+                                            ["detectedClass"]));
+                                  }
+                                : null,
+                            icon: Icon(Icons.file_upload),
+                            label: Text("Upload image"),
+                            style: ButtonStyle(
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.all(20)),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.blue),
+                            ));
+                      } else if (uploadState is UploadingState) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (uploadState is UploadCompleteState) {
+                        return Icon(Icons.check);
+                      } else {
+                        return Container();
+                      }
+                    })
                   ],
                 ),
               );
