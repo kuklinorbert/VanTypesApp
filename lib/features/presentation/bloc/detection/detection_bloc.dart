@@ -94,7 +94,6 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
   ) async* {
     yield permissionOrDownload.fold(
       (failure) {
-        print(failure);
         return ErrorState(message: _mapFailureToMessage(failure));
       },
       (image) {

@@ -29,7 +29,6 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   Stream<ItemsState> mapEventToState(ItemsEvent event) async* {
     if (event is GetItemsEvent) {
       yield LoadingItems();
-      print(isReset);
       final failureOrItems = await _getItems
           .call(items.Params(type: event.type, lastDocument: lastDocument));
       isReset = false;

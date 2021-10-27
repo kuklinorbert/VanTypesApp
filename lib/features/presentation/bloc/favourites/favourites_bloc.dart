@@ -19,7 +19,7 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   final getFav.GetFavourites _getFavourites;
   final addFav.AddFavourite _addFavourite;
   final remFav.RemoveFavourite _removeFavourite;
-  List<String> userFavourites;
+  List<String> userFavourites = [];
 
   FavouritesBloc(
       {@required getFav.GetFavourites getFavourites,

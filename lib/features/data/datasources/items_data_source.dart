@@ -8,6 +8,8 @@ abstract class ItemsDataSource {
   Future<ItemsResponse> getPictures(String type, DocumentSnapshot lastDocument);
   Future<ItemsResponse> getFeedPictures(
       String type, DocumentSnapshot lastDocument);
+  Future<List<Picture>> getUserItems(String userId);
+  Future<List<Picture>> getUserFavourites(String userId);
 }
 
 class ItemsDataSourceImpl implements ItemsDataSource {
@@ -39,7 +41,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
       pictures.add(new Picture(
         id: element.id,
         link: data["link"],
-        likes: int.parse(data["likes"].toString()),
+        likes: int.parse(data["likesCount"].toString()),
         type: data["type"],
         uploadedBy: data["uploadedBy"],
       ));
@@ -60,13 +62,13 @@ class ItemsDataSourceImpl implements ItemsDataSource {
     if (lastDocument == null) {
       result = await firebaseFirestore
           .collection('pictures')
-          .orderBy('likes', descending: true)
+          .orderBy('likesCount', descending: true)
           .limit(4)
           .get();
     } else {
       result = await firebaseFirestore
           .collection('pictures')
-          .orderBy('likes', descending: true)
+          .orderBy('likesCount', descending: true)
           .limit(4)
           .startAfterDocument(lastDocument)
           .get();
@@ -77,7 +79,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
       pictures.add(new Picture(
         id: element.id,
         link: data["link"],
-        likes: int.parse(data["likes"].toString()),
+        likes: int.parse(data["likesCount"].toString()),
         type: data["type"],
         uploadedBy: data["uploadedBy"],
       ));
@@ -87,9 +89,46 @@ class ItemsDataSourceImpl implements ItemsDataSource {
         ? throw (NoMoreItemsException())
         : lastDocument = result.docs[result.docs.length - 1];
 
-    print('ujraaa');
-    print('es ujraaa');
-
     return ItemsResponse(pictures: pictures, lastDocument: lastDocument);
+  }
+
+  @override
+  Future<List<Picture>> getUserItems(String userId) async {
+    List<Picture> pictures = [];
+    var result = await firebaseFirestore
+        .collection('pictures')
+        .where('uploadedBy', isEqualTo: userId)
+        .get();
+    result.docs.forEach((element) {
+      var data = element.data();
+      pictures.add(new Picture(
+        id: element.id,
+        link: data["link"],
+        likes: int.parse(data["likesCount"].toString()),
+        type: data["type"],
+        uploadedBy: data["uploadedBy"],
+      ));
+    });
+    return pictures;
+  }
+
+  @override
+  Future<List<Picture>> getUserFavourites(String userId) async {
+    List<Picture> pictures = [];
+    var result = await firebaseFirestore
+        .collection('pictures')
+        .where("likedBy", arrayContains: userId)
+        .get();
+    result.docs.forEach((element) {
+      var data = element.data();
+      pictures.add(new Picture(
+        id: element.id,
+        link: data["link"],
+        likes: int.parse(data["likesCount"].toString()),
+        type: data["type"],
+        uploadedBy: data["uploadedBy"],
+      ));
+    });
+    return pictures;
   }
 }

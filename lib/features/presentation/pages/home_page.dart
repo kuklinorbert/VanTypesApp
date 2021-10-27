@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/feed/feed_bloc.dart';
-import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
+import 'package:vantypesapp/features/presentation/widgets/card.dart';
 
 import '../../../injection_container.dart';
 
@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     feedBloc.close();
-    //sl.resetLazySingleton<FeedBloc>(instance: sl<FeedBloc>());
     super.dispose();
   }
 
@@ -59,7 +58,6 @@ class _HomePageState extends State<HomePage>
         }
       },
       builder: (context, state) {
-        print(state);
         if (state is LoadingFeedItems && items.isEmpty) {
           return Center(
             child: CircularProgressIndicator(),
@@ -111,86 +109,7 @@ class _HomePageState extends State<HomePage>
                             ),
                           ),
                         )
-                  : Card(
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height / 2.2,
-                          child: Image.network(
-                            items[index].link,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, child, stackTrace) {
-                              return Center(
-                                child: Text("Error loading image!"),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(child: CircularProgressIndicator());
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(items[index].uploadedBy,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w400)),
-                            Row(
-                              children: [
-                                BlocBuilder(
-                                    bloc: favouritesBloc,
-                                    builder: (context, state) {
-                                      print(state);
-                                      if (state is FavouritesFetchedState) {
-                                        return favouritesBloc.userFavourites
-                                                .contains(items[index].id)
-                                            ? IconButton(
-                                                onPressed: () {
-                                                  favouritesBloc.add(
-                                                      RemoveFavouriteEvent(
-                                                          uid: FirebaseAuth
-                                                              .instance
-                                                              .currentUser
-                                                              .displayName,
-                                                          itemId:
-                                                              items[index].id));
-                                                },
-                                                icon: Icon(Icons.favorite))
-                                            : IconButton(
-                                                onPressed: () {
-                                                  favouritesBloc.add(
-                                                      AddFavouriteEvent(
-                                                          uid: FirebaseAuth
-                                                              .instance
-                                                              .currentUser
-                                                              .displayName,
-                                                          itemId:
-                                                              items[index].id));
-                                                },
-                                                icon: Icon(
-                                                    Icons.favorite_outline));
-                                      } else {
-                                        return Container();
-                                      }
-                                    }),
-                                Text(items[index].likes.toString(),
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                      ],
-                    ));
+                  : buildCard(context, index, items, favouritesBloc);
             },
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemCount: items.length);

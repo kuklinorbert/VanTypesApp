@@ -46,7 +46,6 @@ class _DetectionPageState extends State<DetectionPage>
       BlocConsumer<DetectionBloc, DetectionState>(
           bloc: detectionBloc,
           listener: (context, state) {
-            print("Listener " + state.toString());
             if (state is ImageLoadedState) {
               detectionBloc.img = File(state.image[0]);
               detectionBloc.imgW = state.image[1];
@@ -77,7 +76,6 @@ class _DetectionPageState extends State<DetectionPage>
             }
           },
           builder: (context, state) {
-            print("Elso builder " + state.toString());
             if (state is LoadedModelState) {
               return Container(height: size.height / 3);
             }
@@ -115,12 +113,6 @@ class _DetectionPageState extends State<DetectionPage>
                 width = size.width;
                 factorX = size.width;
                 factorY = imgH / imgW * size.width;
-              }
-
-              if (state.prediction.isNotEmpty) {
-                print('nem');
-              } else {
-                print('igen');
               }
 
               return Column(
@@ -200,7 +192,6 @@ class _DetectionPageState extends State<DetectionPage>
             }
           },
           builder: (context, detectionState) {
-            print("Masodik builder " + detectionState.toString());
             if (detectionState is LoadedModelState) {
               return Expanded(
                 child: Column(

@@ -40,3 +40,5 @@ class NoMoreItemsFailure extends Failure {}
 class UploadFailure extends Failure {}
 
 class FavouritesFailure extends Failure {}
+
+class UserItemsFailure extends Failure {}

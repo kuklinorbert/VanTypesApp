@@ -15,6 +15,7 @@ import 'package:vantypesapp/features/data/repositories/feed_repository_impl.dart
 import 'package:vantypesapp/features/data/repositories/items_repository_impl.dart';
 import 'package:vantypesapp/features/data/repositories/registration_repository_impl.dart';
 import 'package:vantypesapp/features/data/repositories/upload_repository_impl.dart';
+import 'package:vantypesapp/features/data/repositories/user_repository_impl.dart';
 import 'package:vantypesapp/features/domain/repositories/auth_repository.dart';
 import 'package:vantypesapp/features/domain/repositories/detection_repository.dart';
 import 'package:vantypesapp/features/domain/repositories/favourites_repository.dart';
@@ -22,12 +23,15 @@ import 'package:vantypesapp/features/domain/repositories/feed_repository.dart';
 import 'package:vantypesapp/features/domain/repositories/items_repository.dart';
 import 'package:vantypesapp/features/domain/repositories/registration_repository.dart';
 import 'package:vantypesapp/features/domain/repositories/upload_repository.dart';
+import 'package:vantypesapp/features/domain/repositories/user_repository.dart';
 import 'package:vantypesapp/features/domain/usecases/add_favourite.dart';
 import 'package:vantypesapp/features/domain/usecases/check_camera_permission.dart';
 import 'package:vantypesapp/features/domain/usecases/check_storage_permission.dart';
 import 'package:vantypesapp/features/domain/usecases/get_favourites.dart';
 import 'package:vantypesapp/features/domain/usecases/get_feed_items.dart';
 import 'package:vantypesapp/features/domain/usecases/get_items.dart';
+import 'package:vantypesapp/features/domain/usecases/get_user_favourites.dart';
+import 'package:vantypesapp/features/domain/usecases/get_user_items.dart';
 import 'package:vantypesapp/features/domain/usecases/load_model.dart';
 import 'package:vantypesapp/features/domain/usecases/pick_gallery.dart';
 import 'package:vantypesapp/features/domain/usecases/predict.dart';
@@ -43,6 +47,7 @@ import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/registration/registration_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
+import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 
 import 'core/util/image_converter.dart';
 import 'features/domain/usecases/check_auth.dart';
@@ -76,6 +81,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FavouritesBloc(
       getFavourites: sl(), addFavourite: sl(), removeFavourite: sl()));
 
+  sl.registerLazySingleton(
+      () => UserBloc(getUserItems: sl(), getUserFavourites: sl()));
+
   sl.registerLazySingleton(() => CheckCameraPermission(sl()));
   sl.registerLazySingleton(() => CheckStoragePermission(sl()));
   sl.registerLazySingleton(() => LoadModel(sl()));
@@ -92,6 +100,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetFavourites(sl()));
   sl.registerLazySingleton(() => AddFavourite(sl()));
   sl.registerLazySingleton(() => RemoveFavourite(sl()));
+  sl.registerLazySingleton(() => GetUserItems(sl()));
+  sl.registerLazySingleton(() => GetUserFavourites(sl()));
 
   sl.registerLazySingleton<ClassifierRepository>(() => ClassifierRepositoryImpl(
       galleryDataSource: sl(), cameraDataSource: sl(), imageConverter: sl()));
@@ -108,6 +118,8 @@ Future<void> init() async {
       () => UploadRepositoryImpl(networkInfo: sl()));
   sl.registerLazySingleton<FavouritesRepository>(() =>
       FavouritesRepositoryImpl(favouritesDataSource: sl(), networkInfo: sl()));
+  sl.registerLazySingleton<UserRepository>(
+      () => UserRepositoryImpl(itemsDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton<CameraDataSource>(
       () => CameraDataSourceImpl(imagePicker: sl()));

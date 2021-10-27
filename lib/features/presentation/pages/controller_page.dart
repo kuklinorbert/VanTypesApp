@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vantypesapp/core/util/themes.dart';
 import 'package:vantypesapp/features/domain/usecases/add_favourite.dart';
 import 'package:vantypesapp/features/domain/usecases/get_favourites.dart';
 import 'package:vantypesapp/features/domain/usecases/remove_favourite.dart';
@@ -14,7 +13,7 @@ import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_blo
 import 'package:vantypesapp/features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
 import 'package:vantypesapp/features/presentation/pages/detection_page.dart';
-import 'package:vantypesapp/features/presentation/pages/favourites_page.dart';
+import 'package:vantypesapp/features/presentation/pages/user_page.dart';
 import 'package:vantypesapp/features/presentation/pages/categories_page.dart';
 import 'package:vantypesapp/features/presentation/pages/home_page.dart';
 import 'package:vantypesapp/features/presentation/widgets/navbar.dart';
@@ -207,7 +206,7 @@ class _MainPageState extends State<MainPage> {
                   HomePage(),
                   DetectionPage(),
                   CategoriesPage(),
-                  FavouritesPage()
+                  UserPage()
                 ],
               )),
           bottomNavigationBar:

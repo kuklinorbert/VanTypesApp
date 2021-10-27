@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
+import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
+import 'package:vantypesapp/features/presentation/widgets/card.dart';
 
 import '../../../injection_container.dart';
 
@@ -15,12 +17,14 @@ class CategoryImagesPage extends StatefulWidget {
 class _CategoryImagesPageState extends State<CategoryImagesPage> {
   final ScrollController _scrollController = ScrollController();
   ItemsBloc itemsBloc;
+  FavouritesBloc favouritesBloc;
   List<Picture> items = [];
   String type;
 
   @override
   void initState() {
     itemsBloc = sl<ItemsBloc>();
+    favouritesBloc = sl<FavouritesBloc>();
     super.initState();
   }
 
@@ -60,7 +64,6 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
           }
         },
         builder: (context, state) {
-          print(state);
           if (state is LoadingItems && items.isEmpty) {
             return Center(
               child: CircularProgressIndicator(),
@@ -88,68 +91,7 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
                   }
                 }),
               itemBuilder: (context, index) {
-                return (!itemsBloc.isEnd && index >= items.length - 1)
-                    ? (itemsBloc.isError == false)
-                        ? itemsBloc.isEnd == true
-                            ? Container()
-                            : Center(
-                                child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: CircularProgressIndicator(),
-                              ))
-                        : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.refresh,
-                                  size: 35,
-                                ),
-                                onPressed: () {
-                                  itemsBloc.isError = false;
-                                  itemsBloc.add(GetItemsEvent(type: type));
-                                },
-                              ),
-                            ),
-                          )
-                    : Card(
-                        child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height / 2.2,
-                            child: Image.network(
-                              items[index].link,
-                              fit: BoxFit.contain,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(items[index].uploadedBy,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400)),
-                              Text(items[index].likes.toString(),
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400)),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                        ],
-                      ));
+                return buildCard(context, index, items, favouritesBloc);
               },
               separatorBuilder: (context, index) => const SizedBox(height: 10),
               itemCount: items.length);

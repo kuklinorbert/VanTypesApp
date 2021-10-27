@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({Key key}) : super(key: key);
@@ -16,18 +15,6 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-  void test() async {
-    var test = await firebaseFirestore.collection('pictures').get();
-    // var test = await firebaseFirestore
-    //     .collection('pictures')
-    //     .where('type', isEqualTo: "box")
-    //     .get();
-    print(test.docs[0].data());
-    test.docs.forEach((result) {
-      print(result.data());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -42,7 +29,6 @@ class _CategoriesPageState extends State<CategoriesPage>
         children: [
           ElevatedButton(
             onPressed: () {
-              //test();
               Navigator.of(context).pushNamed('/category', arguments: "panel");
             },
             child: Text(
