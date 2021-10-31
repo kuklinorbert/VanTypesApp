@@ -24,3 +24,12 @@ class GetUserItemsEvent extends UserEvent {
   @override
   List<Object> get props => [userId];
 }
+
+class DeleteUserItemEvent extends UserEvent {
+  final String itemId;
+
+  DeleteUserItemEvent({@required this.itemId});
+
+  @override
+  List<Object> get props => [itemId];
+}

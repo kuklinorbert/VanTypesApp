@@ -10,6 +10,7 @@ abstract class ItemsDataSource {
       String type, DocumentSnapshot lastDocument);
   Future<List<Picture>> getUserItems(String userId);
   Future<List<Picture>> getUserFavourites(String userId);
+  Future<String> deleteUserItem(String itemId);
 }
 
 class ItemsDataSourceImpl implements ItemsDataSource {
@@ -109,6 +110,8 @@ class ItemsDataSourceImpl implements ItemsDataSource {
         uploadedBy: data["uploadedBy"],
       ));
     });
+    print(userId);
+
     return pictures;
   }
 
@@ -130,5 +133,12 @@ class ItemsDataSourceImpl implements ItemsDataSource {
       ));
     });
     return pictures;
+  }
+
+  @override
+  Future<String> deleteUserItem(String itemId) async {
+    var delete =
+        await firebaseFirestore.collection('pictures').doc(itemId).delete();
+    return itemId;
   }
 }

@@ -26,7 +26,7 @@ class UploadRepositoryImpl implements UploadRepository {
             .ref('$type/$time.jpg')
             .getDownloadURL();
         await firebaseFirestore.collection('pictures').add({
-          "likes": 0,
+          "likesCount": 0,
           "link": url,
           "type": type,
           "uploadedBy": FirebaseAuth.instance.currentUser.displayName

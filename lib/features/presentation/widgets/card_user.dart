@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
+import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 
 Card buildCardUser(BuildContext context, int index, List<Picture> items,
-    FavouritesBloc favouritesBloc) {
+    FavouritesBloc favouritesBloc, UserBloc userBloc) {
   return Card(
       child: Column(
     mainAxisAlignment: MainAxisAlignment.start,
@@ -33,7 +34,9 @@ Card buildCardUser(BuildContext context, int index, List<Picture> items,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                userBloc.add(DeleteUserItemEvent(itemId: items[index].id));
+              },
               icon: Icon(
                 Icons.delete_outline,
                 color: Colors.red,

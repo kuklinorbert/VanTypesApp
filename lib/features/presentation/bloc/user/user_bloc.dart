@@ -4,6 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
+import 'package:vantypesapp/features/domain/usecases/delete_user_item.dart'
+    as delete;
 import 'package:vantypesapp/features/domain/usecases/get_user_favourites.dart'
     as userFav;
 import 'package:vantypesapp/features/domain/usecases/get_user_items.dart'
@@ -16,6 +18,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final userItems.GetUserItems _getUserItems;
   final userFav.GetUserFavourites _getUserFavourites;
+  final delete.DeleteUserItem _deleteUserItem;
   List<Picture> pictureList = [];
   bool isFetching = false;
   bool isError = false;
@@ -24,9 +27,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(
       {@required userItems.GetUserItems getUserItems,
-      @required userFav.GetUserFavourites getUserFavourites})
+      @required userFav.GetUserFavourites getUserFavourites,
+      @required delete.DeleteUserItem deleteUserItem})
       : _getUserItems = getUserItems,
         _getUserFavourites = getUserFavourites,
+        _deleteUserItem = deleteUserItem,
         super(UserInitial());
 
   @override
@@ -43,6 +48,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await _getUserFavourites(userFav.Params(userId: event.userId));
       yield* _eitherUserFavouritesOrErrorState(failureOrFavourites);
     }
+    if (event is DeleteUserItemEvent) {
+      yield LoadingUserItems();
+      final failureOrDelete =
+          await _deleteUserItem(delete.Params(itemId: event.itemId));
+      yield* _eitherUserItemDeleteOrErrorState(failureOrDelete);
+    }
   }
 
   Stream<UserState> _eitherUserItemsOrErrorState(
@@ -53,7 +64,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return ErrorUserItems(message: _mapFailureToMessage(failure));
       },
       (response) {
-        return LoadedUserItems(items: response);
+        pictureList = response;
+        return LoadedUserItems(items: pictureList);
+      },
+    );
+  }
+
+  Stream<UserState> _eitherUserItemDeleteOrErrorState(
+    Either<Failure, String> failureOrDelete,
+  ) async* {
+    yield failureOrDelete.fold(
+      (failure) {
+        return ErrorUserItems(message: _mapFailureToMessage(failure));
+      },
+      (response) {
+        pictureList.removeWhere((element) => element.id == response);
+        return LoadedUserItems(items: pictureList);
       },
     );
   }

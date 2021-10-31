@@ -51,6 +51,7 @@ import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 
 import 'core/util/image_converter.dart';
 import 'features/domain/usecases/check_auth.dart';
+import 'features/domain/usecases/delete_user_item.dart';
 import 'features/domain/usecases/login.dart';
 import 'features/domain/usecases/logout.dart';
 
@@ -81,8 +82,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FavouritesBloc(
       getFavourites: sl(), addFavourite: sl(), removeFavourite: sl()));
 
-  sl.registerLazySingleton(
-      () => UserBloc(getUserItems: sl(), getUserFavourites: sl()));
+  sl.registerLazySingleton(() => UserBloc(
+      getUserItems: sl(), getUserFavourites: sl(), deleteUserItem: sl()));
 
   sl.registerLazySingleton(() => CheckCameraPermission(sl()));
   sl.registerLazySingleton(() => CheckStoragePermission(sl()));
@@ -102,6 +103,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RemoveFavourite(sl()));
   sl.registerLazySingleton(() => GetUserItems(sl()));
   sl.registerLazySingleton(() => GetUserFavourites(sl()));
+  sl.registerLazySingleton(() => DeleteUserItem(sl()));
 
   sl.registerLazySingleton<ClassifierRepository>(() => ClassifierRepositoryImpl(
       galleryDataSource: sl(), cameraDataSource: sl(), imageConverter: sl()));

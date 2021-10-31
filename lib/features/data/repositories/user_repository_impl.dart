@@ -41,4 +41,18 @@ class UserRepositoryImpl implements UserRepository {
       return Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, String>> deleteUserItem(String itemId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await itemsDataSource.deleteUserItem(itemId);
+        return Right(result);
+      } on Exception {
+        return Left(UserItemsFailure());
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
 }

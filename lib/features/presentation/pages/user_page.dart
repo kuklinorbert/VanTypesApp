@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
-import 'package:vantypesapp/features/domain/usecases/get_user_items.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
@@ -45,10 +44,11 @@ class _UserPageState extends State<UserPage>
     return BlocListener<UserBloc, UserState>(
         bloc: userBloc,
         listener: (context, state) {
+          print(state);
           if (state is LoadedUserItems) {
             userBloc.isFetching = false;
             userBloc.isError = false;
-            items = state.items;
+            //items = state.items;
           }
           if (state is LoadedFavouriteItems) {
             userBloc.isFetching = false;
@@ -160,14 +160,20 @@ class _UserPageState extends State<UserPage>
                                           (BuildContext context, int index) {
                                         return Column(
                                           children: [
-                                            buildCardUser(context, index, items,
-                                                favouritesBloc),
+                                            buildCardUser(
+                                                context,
+                                                index,
+                                                userBloc.pictureList,
+                                                favouritesBloc,
+                                                userBloc),
                                             SizedBox(
                                               height: 10,
                                             )
                                           ],
                                         );
-                                      }, childCount: items.length),
+                                      },
+                                          childCount: userBloc.pictureList
+                                              .length), //items.length),
                                     ),
                                   ],
                                 );
