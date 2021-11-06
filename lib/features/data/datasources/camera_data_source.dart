@@ -13,7 +13,7 @@ class CameraDataSourceImpl implements CameraDataSource {
 
   @override
   Future<File> getCameraImage() async {
-    var image = await imagePicker.getImage(source: ImageSource.camera);
+    var image = await imagePicker.pickImage(source: ImageSource.camera);
     if (image != null) {
       return File(image.path);
     } else {

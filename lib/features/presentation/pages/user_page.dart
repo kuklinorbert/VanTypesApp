@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/card.dart';
 import 'package:vantypesapp/features/presentation/widgets/card_user.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../injection_container.dart';
 
@@ -24,15 +24,12 @@ class _UserPageState extends State<UserPage>
 
   UserBloc userBloc;
   ScrollController _scrollController = ScrollController();
-  List<Picture> items = [];
-  List<Picture> favourites = [];
   FavouritesBloc favouritesBloc;
+  String user = FirebaseAuth.instance.currentUser.displayName;
 
   @override
   void initState() {
-    userBloc = sl<UserBloc>()
-      ..add(GetUserFavouritesEvent(
-          userId: FirebaseAuth.instance.currentUser.displayName));
+    userBloc = sl<UserBloc>()..add(GetUserFavouritesEvent(userId: user));
     favouritesBloc = sl<FavouritesBloc>();
     super.initState();
   }
@@ -41,24 +38,49 @@ class _UserPageState extends State<UserPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return BlocListener<UserBloc, UserState>(
-        bloc: userBloc,
-        listener: (context, state) {
-          print(state);
-          if (state is LoadedUserItems) {
-            userBloc.isFetching = false;
-            userBloc.isError = false;
-            //items = state.items;
-          }
-          if (state is LoadedFavouriteItems) {
-            userBloc.isFetching = false;
-            userBloc.isError = false;
-            favourites = state.items;
-          }
-          if (state is ErrorItems) {
-            userBloc.isError = false;
-          }
-        },
+    return MultiBlocListener(
+        listeners: [
+          BlocListener<UserBloc, UserState>(
+            bloc: userBloc,
+            listener: (context, state) {
+              if (state is LoadedUserItems) {
+                userBloc.isFetching = false;
+                userBloc.isError = false;
+              }
+              if (state is LoadedFavouriteItems) {
+                userBloc.isFetching = false;
+                userBloc.isError = false;
+              }
+              if (state is ErrorItems) {
+                userBloc.isError = false;
+              }
+            },
+          ),
+          BlocListener<FavouritesBloc, FavouritesState>(
+              bloc: favouritesBloc,
+              listener: (context, state) {
+                if (state is AddedFavourite) {
+                  if (userBloc.items
+                      .any((element) => element.id == state.itemId)) {
+                    userBloc.items
+                        .firstWhere((element) => element.id == state.itemId)
+                        .likedBy
+                        .add(user);
+                  }
+                  userBloc.add(GetUserFavouritesEvent(userId: user));
+                }
+                if (state is RemovedFavourite) {
+                  if (userBloc.items
+                      .any((element) => element.id == state.itemId)) {
+                    userBloc.items
+                        .firstWhere((element) => element.id == state.itemId)
+                        .likedBy
+                        .remove(user);
+                  }
+                }
+                userBloc.add(GetUserFavouritesEvent(userId: user));
+              })
+        ],
         child: DefaultTabController(
           length: 2,
           child: NestedScrollView(
@@ -77,21 +99,18 @@ class _UserPageState extends State<UserPage>
                           child: TabBar(
                             onTap: (index) {
                               if (index == 0) {
-                                userBloc.add(GetUserFavouritesEvent(
-                                    userId: FirebaseAuth
-                                        .instance.currentUser.displayName));
+                                userBloc
+                                    .add(GetUserFavouritesEvent(userId: user));
                               } else {
-                                userBloc.add(GetUserItemsEvent(
-                                    userId: FirebaseAuth
-                                        .instance.currentUser.displayName));
+                                userBloc.add(GetUserItemsEvent(userId: user));
                               }
                             },
                             tabs: [
                               Tab(
-                                text: "Favourites",
+                                text: "my_favourites".tr(),
                               ),
                               Tab(
-                                text: "My items",
+                                text: "my_items".tr(),
                               )
                             ],
                           ),
@@ -113,7 +132,7 @@ class _UserPageState extends State<UserPage>
                             child: Builder(
                               builder: (BuildContext context) {
                                 return CustomScrollView(
-                                  key: PageStorageKey<String>("elso"),
+                                  key: PageStorageKey<String>("first"),
                                   slivers: [
                                     SliverOverlapInjector(
                                       handle: NestedScrollView
@@ -125,14 +144,19 @@ class _UserPageState extends State<UserPage>
                                           (BuildContext context, int index) {
                                         return Column(
                                           children: [
-                                            buildCard(context, index,
-                                                favourites, favouritesBloc),
+                                            buildCard(
+                                                context,
+                                                index,
+                                                userBloc.favourites,
+                                                favouritesBloc),
                                             SizedBox(
                                               height: 10,
                                             )
                                           ],
                                         );
-                                      }, childCount: favourites.length),
+                                      },
+                                          childCount:
+                                              userBloc.favourites.length),
                                     ),
                                   ],
                                 );
@@ -148,7 +172,7 @@ class _UserPageState extends State<UserPage>
                             child: Builder(
                               builder: (BuildContext context) {
                                 return CustomScrollView(
-                                  key: PageStorageKey<String>("masodik"),
+                                  key: PageStorageKey<String>("second"),
                                   slivers: [
                                     SliverOverlapInjector(
                                       handle: NestedScrollView
@@ -163,7 +187,7 @@ class _UserPageState extends State<UserPage>
                                             buildCardUser(
                                                 context,
                                                 index,
-                                                userBloc.pictureList,
+                                                userBloc.items,
                                                 favouritesBloc,
                                                 userBloc),
                                             SizedBox(
@@ -172,8 +196,8 @@ class _UserPageState extends State<UserPage>
                                           ],
                                         );
                                       },
-                                          childCount: userBloc.pictureList
-                                              .length), //items.length),
+                                          childCount: userBloc
+                                              .items.length), //items.length),
                                     ),
                                   ],
                                 );

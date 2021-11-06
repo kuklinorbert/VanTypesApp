@@ -7,7 +7,7 @@ import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:vantypesapp/features/domain/entities/response.dart';
-import 'package:vantypesapp/features/domain/usecases/get_feed_items.dart'
+import 'package:vantypesapp/features/domain/usecases/feed/get_feed_items.dart'
     as feed;
 
 part 'feed_event.dart';

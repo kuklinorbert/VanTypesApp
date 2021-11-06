@@ -14,7 +14,7 @@ class GalleryDataSourceImpl implements GalleryDataSource {
 
   @override
   Future<File> getCameraImage() async {
-    var image = await imagePicker.getImage(source: ImageSource.gallery);
+    var image = await imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       return File(image.path);
     } else {

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/feed/feed_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/card.dart';
@@ -20,8 +19,8 @@ class _HomePageState extends State<HomePage>
   final ScrollController _scrollController = ScrollController();
   FeedBloc feedBloc;
   FavouritesBloc favouritesBloc;
-  List<Picture> items = [];
   String type = "all";
+  final user = FirebaseAuth.instance.currentUser.displayName;
 
   @override
   bool get wantKeepAlive => true;
@@ -43,77 +42,102 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: BlocConsumer<FeedBloc, FeedState>(
-      bloc: feedBloc..add(GetFeedItemsEvent(type: type)),
+    super.build(context);
+    return BlocListener<FavouritesBloc, FavouritesState>(
+      bloc: favouritesBloc,
       listener: (context, state) {
-        if (state is ErrorFeedItems) {
-          feedBloc.isError = true;
+        if (state is AddedFavourite) {
+          if (feedBloc.pictureList
+              .any((element) => element.id == state.itemId)) {
+            feedBloc.pictureList
+                .firstWhere((element) => element.id == state.itemId)
+                .likedBy
+                .add(user);
+          }
         }
+        if (state is RemovedFavourite) {
+          if (feedBloc.pictureList
+              .any((element) => element.id == state.itemId)) {
+            feedBloc.pictureList
+                .firstWhere((element) => element.id == state.itemId)
+                .likedBy
+                .remove(user);
+          }
+        }
+      },
+      child: Container(
+          child: BlocConsumer<FeedBloc, FeedState>(
+        bloc: feedBloc..add(GetFeedItemsEvent(type: type)),
+        listener: (context, state) {
+          if (state is ErrorFeedItems) {
+            feedBloc.isError = true;
+          }
 
-        if (state is LoadedFeedItems) {
-          feedBloc.isFetching = false;
-          feedBloc.isError = false;
-          items = state.items;
-        }
-      },
-      builder: (context, state) {
-        if (state is LoadingFeedItems && items.isEmpty) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is ErrorFeedItems && items.isEmpty) {
-          return IconButton(
-            icon: Icon(
-              Icons.refresh,
-              size: 35,
-            ),
-            onPressed: () {
-              feedBloc.add(GetFeedItemsEvent(type: type));
-            },
-          );
-        }
-        return ListView.separated(
-            controller: _scrollController
-              ..addListener(() {
-                if (_scrollController.offset ==
-                        _scrollController.position.maxScrollExtent &&
-                    !feedBloc.isFetching &&
-                    !feedBloc.isEnd) {
-                  feedBloc.add(GetFeedItemsEvent(type: type));
-                  feedBloc.isFetching = true;
-                }
-              }),
-            itemBuilder: (context, index) {
-              return (!feedBloc.isEnd && index >= items.length - 1)
-                  ? (feedBloc.isError == false)
-                      ? feedBloc.isEnd == true
-                          ? Container()
-                          : Center(
-                              child: Padding(
+          if (state is LoadedFeedItems) {
+            feedBloc.isFetching = false;
+            feedBloc.isError = false;
+          }
+        },
+        builder: (context, state) {
+          if (state is LoadingFeedItems && feedBloc.pictureList.isEmpty) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is ErrorFeedItems && feedBloc.pictureList.isEmpty) {
+            return IconButton(
+              icon: Icon(
+                Icons.refresh,
+                size: 35,
+              ),
+              onPressed: () {
+                feedBloc.add(GetFeedItemsEvent(type: type));
+              },
+            );
+          }
+          return ListView.separated(
+              controller: _scrollController
+                ..addListener(() {
+                  if (_scrollController.offset ==
+                          _scrollController.position.maxScrollExtent &&
+                      !feedBloc.isFetching &&
+                      !feedBloc.isEnd) {
+                    feedBloc.add(GetFeedItemsEvent(type: type));
+                    feedBloc.isFetching = true;
+                  }
+                }),
+              itemBuilder: (context, index) {
+                return (!feedBloc.isEnd &&
+                        index >= feedBloc.pictureList.length - 1)
+                    ? (feedBloc.isError == false)
+                        ? feedBloc.isEnd == true
+                            ? Container()
+                            : Center(
+                                child: Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child: CircularProgressIndicator(),
+                              ))
+                        : Center(
+                            child: Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: CircularProgressIndicator(),
-                            ))
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.refresh,
-                                size: 35,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.refresh,
+                                  size: 35,
+                                ),
+                                onPressed: () {
+                                  feedBloc.isError = false;
+                                  feedBloc.add(GetFeedItemsEvent(type: type));
+                                },
                               ),
-                              onPressed: () {
-                                feedBloc.isError = false;
-                                feedBloc.add(GetFeedItemsEvent(type: type));
-                              },
                             ),
-                          ),
-                        )
-                  : buildCard(context, index, items, favouritesBloc);
-            },
-            separatorBuilder: (context, index) => const SizedBox(height: 10),
-            itemCount: items.length);
-      },
-    ));
+                          )
+                    : buildCard(
+                        context, index, feedBloc.pictureList, favouritesBloc);
+              },
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemCount: feedBloc.pictureList.length);
+        },
+      )),
+    );
   }
 }

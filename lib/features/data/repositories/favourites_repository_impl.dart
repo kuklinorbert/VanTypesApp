@@ -14,7 +14,7 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
       {@required this.favouritesDataSource, @required this.networkInfo});
 
   @override
-  Future<Either<Failure, Favourites>> addFavourite(
+  Future<Either<Failure, String>> addFavourite(
       String uid, String itemId) async {
     if (await networkInfo.isConnected) {
       try {
@@ -43,7 +43,7 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
   }
 
   @override
-  Future<Either<Failure, Favourites>> removeFavourite(
+  Future<Either<Failure, String>> removeFavourite(
       String uid, String itemId) async {
     if (await networkInfo.isConnected) {
       try {

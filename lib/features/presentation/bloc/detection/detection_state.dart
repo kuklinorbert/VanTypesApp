@@ -10,8 +10,6 @@ abstract class DetectionState extends Equatable {
 
 class DetectionInitial extends DetectionState {}
 
-class LoadingModelState extends DetectionState {}
-
 class LoadedModelState extends DetectionState {}
 
 class PredictingState extends DetectionState {}
@@ -40,14 +38,7 @@ class PermissionDeniedState extends DetectionState {
 
 class ImageLoadingState extends DetectionState {}
 
-class ImageLoadedState extends DetectionState {
-  final List image;
-
-  ImageLoadedState({@required this.image});
-
-  @override
-  List<Object> get props => [image];
-}
+class ImageLoadedState extends DetectionState {}
 
 class ErrorState extends DetectionState {
   final String message;

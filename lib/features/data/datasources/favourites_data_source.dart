@@ -3,8 +3,8 @@ import 'package:vantypesapp/features/domain/entities/favourites.dart';
 
 abstract class FavouritesDataSource {
   Future<Favourites> getFavourites(String uid);
-  Future<Favourites> addFavourite(String uid, String itemId);
-  Future<Favourites> removeFavourite(String uid, String itemId);
+  Future<String> addFavourite(String uid, String itemId);
+  Future<String> removeFavourite(String uid, String itemId);
 }
 
 class FavouritesDataSourceImpl implements FavouritesDataSource {
@@ -17,7 +17,6 @@ class FavouritesDataSourceImpl implements FavouritesDataSource {
         .where("likedBy", arrayContains: uid)
         .get();
     result.docs.forEach((element) {
-      print(element.data());
       items.add(element.id);
     });
 
@@ -25,37 +24,19 @@ class FavouritesDataSourceImpl implements FavouritesDataSource {
   }
 
   @override
-  Future<Favourites> addFavourite(String uid, String itemId) async {
-    List<String> items = [];
+  Future<String> addFavourite(String uid, String itemId) async {
     await firebaseFirestore.collection("pictures").doc(itemId).update({
       "likedBy": FieldValue.arrayUnion([uid])
     });
-    var result = await firebaseFirestore
-        .collection("pictures")
-        .where("likedBy", arrayContains: uid)
-        .get();
-    print(result.docs);
-    result.docs.forEach((element) {
-      items.add(element.id);
-    });
 
-    return Favourites(favourites: items);
+    return itemId;
   }
 
   @override
-  Future<Favourites> removeFavourite(String uid, String itemId) async {
-    List<String> items = [];
+  Future<String> removeFavourite(String uid, String itemId) async {
     await firebaseFirestore.collection("pictures").doc(itemId).update({
       "likedBy": FieldValue.arrayRemove([uid])
     });
-    var result = await firebaseFirestore
-        .collection("pictures")
-        .where("likedBy", arrayContains: uid)
-        .get();
-    result.docs.forEach((element) {
-      items.add(element.id);
-    });
-
-    return Favourites(favourites: items);
+    return itemId;
   }
 }

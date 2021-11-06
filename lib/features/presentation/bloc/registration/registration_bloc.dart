@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/usecases/register.dart';
+import 'package:vantypesapp/features/domain/usecases/registration/register.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 part 'registration_event.dart';

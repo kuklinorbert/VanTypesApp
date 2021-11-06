@@ -8,12 +8,12 @@ import 'package:meta/meta.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
-import 'package:vantypesapp/features/domain/usecases/check_camera_permission.dart';
-import 'package:vantypesapp/features/domain/usecases/check_storage_permission.dart';
-import 'package:vantypesapp/features/domain/usecases/load_model.dart';
-import 'package:vantypesapp/features/domain/usecases/pick_gallery.dart';
-import 'package:vantypesapp/features/domain/usecases/predict.dart';
-import 'package:vantypesapp/features/domain/usecases/take_image.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/check_camera_permission.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/check_storage_permission.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/load_model.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/pick_gallery.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/predict.dart';
+import 'package:vantypesapp/features/domain/usecases/detection/take_image.dart';
 
 part 'detection_event.dart';
 part 'detection_state.dart';
@@ -97,7 +97,10 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
         return ErrorState(message: _mapFailureToMessage(failure));
       },
       (image) {
-        return ImageLoadedState(image: image);
+        img = File(image[0]);
+        imgW = image[1];
+        imgH = image[2];
+        return ImageLoadedState();
       },
     );
   }

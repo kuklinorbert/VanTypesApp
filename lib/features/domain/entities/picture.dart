@@ -7,14 +7,14 @@ class Picture extends Equatable {
       @required this.link,
       @required this.uploadedBy,
       @required this.type,
-      @required this.likes});
+      @required this.likedBy});
 
   final String id;
   final String link;
   final String uploadedBy;
   final String type;
-  final int likes;
+  final List<String> likedBy;
 
   @override
-  List<Object> get props => [id, link, uploadedBy, type, likes];
+  List<Object> get props => [id, link, uploadedBy, type, likedBy];
 }

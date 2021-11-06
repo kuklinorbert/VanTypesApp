@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/usecases/upload_image.dart'
+import 'package:vantypesapp/features/domain/usecases/upload/upload_image.dart'
     as upload;
 import 'package:easy_localization/easy_localization.dart';
 

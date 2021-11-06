@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         Image(
                           image: AssetImage('assets/images/login.png'),
                           width: MediaQuery.of(context).size.width / 3.5,
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         SizedBox(
                           height: 50,
@@ -140,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             filled: true,
                             border: OutlineInputBorder(),
-                            hintText: "password_hint".tr(),
+                            hintText: "password_again_hint".tr(),
                             labelText: "password_again".tr(),
                           ),
                           onChanged: (value) {

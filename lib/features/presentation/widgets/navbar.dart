@@ -14,8 +14,9 @@ BottomNavigationBar buildNavbar(NavigationbarBloc navbarBloc, int index) {
     },
     items: [
       BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'home'.tr()),
-      BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'detection'),
-      BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'gallery'),
+      BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'detect'.tr()),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.collections), label: 'gallery'.tr()),
       BottomNavigationBarItem(
           icon: Icon(Icons.favorite), label: 'favourites'.tr()),
     ],

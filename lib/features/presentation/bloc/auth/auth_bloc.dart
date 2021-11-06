@@ -7,9 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
-import 'package:vantypesapp/features/domain/usecases/check_auth.dart';
-import 'package:vantypesapp/features/domain/usecases/login.dart';
-import 'package:vantypesapp/features/domain/usecases/logout.dart';
+import 'package:vantypesapp/features/domain/usecases/authentication/check_auth.dart';
+import 'package:vantypesapp/features/domain/usecases/authentication/login.dart';
+import 'package:vantypesapp/features/domain/usecases/authentication/logout.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -28,9 +28,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _logout = logout,
         _checkAuth = checkAuth,
         super(CheckAuthState());
-
-  @override
-  AuthState get initialState => CheckAuthState();
 
   @override
   Stream<AuthState> mapEventToState(

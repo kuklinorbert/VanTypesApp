@@ -9,9 +9,21 @@ abstract class FavouritesState extends Equatable {
 
 class FavouritesInitial extends FavouritesState {}
 
-class AddingFavourites extends FavouritesState {}
+class AddedFavourite extends FavouritesState {
+  final String itemId;
 
-class RemovingFavourites extends FavouritesState {}
+  AddedFavourite({@required this.itemId});
+
+  List<Object> get props => [itemId];
+}
+
+class RemovedFavourite extends FavouritesState {
+  final String itemId;
+
+  RemovedFavourite({@required this.itemId});
+
+  List<Object> get props => [itemId];
+}
 
 class FavouritesFetchedState extends FavouritesState {
   final Favourites favourites;

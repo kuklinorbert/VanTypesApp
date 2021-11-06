@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/features/presentation/bloc/detection/detection_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../injection_container.dart';
 
@@ -24,7 +23,7 @@ class _DetectionPageState extends State<DetectionPage>
 
   @override
   void initState() {
-    detectionBloc = sl<DetectionBloc>()..add(LoadModelEvent());
+    detectionBloc = sl<DetectionBloc>();
     super.initState();
   }
 
@@ -44,13 +43,10 @@ class _DetectionPageState extends State<DetectionPage>
     Size size = MediaQuery.of(context).size;
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       BlocConsumer<DetectionBloc, DetectionState>(
-          bloc: detectionBloc,
+          bloc: detectionBloc..add(LoadModelEvent()),
           listener: (context, state) {
             if (state is ImageLoadedState) {
-              detectionBloc.img = File(state.image[0]);
-              detectionBloc.imgW = state.image[1];
-              detectionBloc.imgH = state.image[2];
-              detectionBloc.add(PredictEvent(image: File(state.image[0])));
+              detectionBloc.add(PredictEvent(image: detectionBloc.img));
             } else if (state is CameraPermissionGrantedState) {
               detectionBloc.add(TakeImageEvent());
             } else if (state is StoragePermissionGrantedState) {
@@ -151,7 +147,7 @@ class _DetectionPageState extends State<DetectionPage>
                                   ),
                                 ),
                                 child: Text(
-                                  "${state.prediction[0]["detectedClass"]} ${(state.prediction[0]["confidenceInClass"] * 100).toStringAsFixed(0)}%",
+                                  "${state.prediction[0]["detectedClass"].toString().tr()} ${(state.prediction[0]["confidenceInClass"] * 100).toStringAsFixed(0)}%",
                                   style: TextStyle(
                                     background: Paint()..color = blue,
                                     color: Colors.white,
@@ -169,8 +165,9 @@ class _DetectionPageState extends State<DetectionPage>
                   Container(
                       child: Text(
                           state.prediction.isNotEmpty
-                              ? 'The type is ${state.prediction[0]['detectedClass']}!'
-                              : 'No van detected!',
+                              ? 'detection'.tr() +
+                                  '${state.prediction[0]['detectedClass'].toString().tr()}!'
+                              : 'no_detection'.tr(),
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w400))),
                   SizedBox(
@@ -208,7 +205,7 @@ class _DetectionPageState extends State<DetectionPage>
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Text(
-                        "Take a Photo",
+                        "take_photo".tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -226,7 +223,7 @@ class _DetectionPageState extends State<DetectionPage>
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
                       child: Text(
-                        "Pick from Gallery",
+                        "pick_gallery".tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -247,7 +244,7 @@ class _DetectionPageState extends State<DetectionPage>
                         detectionBloc..add(RestartEvent());
                       },
                       icon: Icon(Icons.replay),
-                      label: Text("Restart"),
+                      label: Text("restart").tr(),
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all(EdgeInsets.all(20)),
                         backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -269,7 +266,7 @@ class _DetectionPageState extends State<DetectionPage>
                                   }
                                 : null,
                             icon: Icon(Icons.file_upload),
-                            label: Text("Upload image"),
+                            label: Text("upload_img".tr()),
                             style: ButtonStyle(
                               padding:
                                   MaterialStateProperty.all(EdgeInsets.all(20)),

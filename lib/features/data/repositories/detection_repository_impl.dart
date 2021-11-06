@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/core/error/failure.dart';
@@ -72,28 +71,8 @@ class ClassifierRepositoryImpl implements ClassifierRepository {
   @override
   Future<Either<Failure, List>> predict(File image) async {
     try {
-      //var resize = decodeImage(image.readAsBytesSync());
-
-      // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
-      //var resize1 = copyResize(resize, height: 300);
-
-      //File resize2 = File(image.path)..writeAsBytesSync(encodeJpg(resize1));
-
-      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-      print(decodedImage.width);
-      print(decodedImage.height);
       var output = await Tflite.detectObjectOnImage(
-          path: image.path, threshold: 0.6, numResultsPerClass: 1);
-      // var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-      // print(decodedImage.width);
-      // print(decodedImage.height);
-      // var output = await Tflite.detectObjectOnImage(
-      //     path: image.path,
-      //     model: "YOLO",
-      //     threshold: 0.05,
-      //     //imageMean: 0,
-      //     //imageStd: 255,
-      //     numResultsPerClass: 1);
+          path: image.path, threshold: 0.7, numResultsPerClass: 1);
       return Right(output);
     } on Exception {
       return Left(PredictionFailure());

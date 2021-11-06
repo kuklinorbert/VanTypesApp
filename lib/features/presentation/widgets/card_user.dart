@@ -46,31 +46,38 @@ Card buildCardUser(BuildContext context, int index, List<Picture> items,
               BlocBuilder(
                   bloc: favouritesBloc,
                   builder: (context, state) {
-                    if (state is FavouritesFetchedState) {
-                      return favouritesBloc.userFavourites
-                              .contains(items[index].id)
-                          ? IconButton(
-                              onPressed: () {
-                                favouritesBloc.add(RemoveFavouriteEvent(
-                                    uid: FirebaseAuth
-                                        .instance.currentUser.displayName,
-                                    itemId: items[index].id));
-                              },
-                              icon: Icon(Icons.favorite))
-                          : IconButton(
-                              onPressed: () {
-                                favouritesBloc.add(AddFavouriteEvent(
-                                    uid: FirebaseAuth
-                                        .instance.currentUser.displayName,
-                                    itemId: items[index].id));
-                              },
-                              icon: Icon(Icons.favorite_outline));
+                    if (state is FavouritesFetchedState ||
+                        state is AddedFavourite ||
+                        state is RemovedFavourite) {
+                      return Row(
+                        children: [
+                          favouritesBloc.userFavourites
+                                  .contains(items[index].id)
+                              ? IconButton(
+                                  onPressed: () {
+                                    favouritesBloc.add(RemoveFavouriteEvent(
+                                        uid: FirebaseAuth
+                                            .instance.currentUser.displayName,
+                                        itemId: items[index].id));
+                                  },
+                                  icon: Icon(Icons.favorite))
+                              : IconButton(
+                                  onPressed: () {
+                                    favouritesBloc.add(AddFavouriteEvent(
+                                        uid: FirebaseAuth
+                                            .instance.currentUser.displayName,
+                                        itemId: items[index].id));
+                                  },
+                                  icon: Icon(Icons.favorite_outline)),
+                          Text(items[index].likedBy.length.toString(),
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400)),
+                        ],
+                      );
                     } else {
                       return Container();
                     }
                   }),
-              Text(items[index].likes.toString(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
             ],
           )
         ],

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vantypesapp/features/domain/usecases/add_favourite.dart';
-import 'package:vantypesapp/features/domain/usecases/get_favourites.dart';
-import 'package:vantypesapp/features/domain/usecases/remove_favourite.dart';
-import 'package:vantypesapp/features/domain/usecases/upload_image.dart';
+import 'package:vantypesapp/features/domain/usecases/favourites/add_favourite.dart';
+import 'package:vantypesapp/features/domain/usecases/favourites/get_favourites.dart';
+import 'package:vantypesapp/features/domain/usecases/favourites/remove_favourite.dart';
+import 'package:vantypesapp/features/domain/usecases/upload/upload_image.dart';
 import 'package:vantypesapp/features/presentation/bloc/auth/auth_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
@@ -33,6 +33,7 @@ class _MainPageState extends State<MainPage> {
   NavigationbarBloc navbarBloc;
   PageController _pageController;
   bool isDark = darkNotifier.value;
+  String user = FirebaseAuth.instance.currentUser.displayName;
 
   @override
   void initState() {
@@ -64,8 +65,7 @@ class _MainPageState extends State<MainPage> {
                 getFavourites: sl<GetFavourites>(),
                 addFavourite: sl<AddFavourite>(),
                 removeFavourite: sl<RemoveFavourite>())
-              ..add(GetFavouritesEvent(
-                  uid: FirebaseAuth.instance.currentUser.displayName)))
+              ..add(GetFavouritesEvent(uid: user)))
       ],
       child: Scaffold(
           drawerEnableOpenDragGesture: false,
@@ -74,7 +74,7 @@ class _MainPageState extends State<MainPage> {
               padding: EdgeInsets.only(top: 50, left: 15),
               children: [
                 Text(
-                  FirebaseAuth.instance.currentUser.displayName,
+                  user,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(
@@ -172,9 +172,7 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
-          appBar: AppBar(
-            title: Text('VanTypesApp'),
-          ),
+          appBar: AppBar(),
           body: BlocListener<NavigationbarBloc, NavigationbarState>(
               bloc: navbarBloc,
               listener: (context, state) {

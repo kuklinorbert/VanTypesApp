@@ -17,10 +17,24 @@ class ItemsDataSourceImpl implements ItemsDataSource {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   ItemsDataSourceImpl({@required this.firebaseFirestore});
 
+  List<Picture> resultToList(dynamic result) {
+    List<Picture> pictures = [];
+    result.docs.forEach((element) {
+      var data = element.data();
+      pictures.add(new Picture(
+          id: element.id,
+          link: data["link"],
+          type: data["type"],
+          uploadedBy: data["uploadedBy"],
+          likedBy: data['likedBy'] != null ? List.from(data["likedBy"]) : []));
+    });
+
+    return pictures;
+  }
+
   @override
   Future<ItemsResponse> getPictures(
       String type, DocumentSnapshot lastDocument) async {
-    List<Picture> pictures = [];
     var result;
     if (lastDocument == null) {
       result = await firebaseFirestore
@@ -37,16 +51,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
           .get();
     }
 
-    result.docs.forEach((element) {
-      var data = element.data();
-      pictures.add(new Picture(
-        id: element.id,
-        link: data["link"],
-        likes: int.parse(data["likesCount"].toString()),
-        type: data["type"],
-        uploadedBy: data["uploadedBy"],
-      ));
-    });
+    final pictures = resultToList(result);
 
     result.docs.length < 1
         ? throw (NoMoreItemsException())
@@ -58,7 +63,6 @@ class ItemsDataSourceImpl implements ItemsDataSource {
   @override
   Future<ItemsResponse> getFeedPictures(
       String type, DocumentSnapshot<Object> lastDocument) async {
-    List<Picture> pictures = [];
     var result;
     if (lastDocument == null) {
       result = await firebaseFirestore
@@ -75,16 +79,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
           .get();
     }
 
-    result.docs.forEach((element) {
-      var data = element.data();
-      pictures.add(new Picture(
-        id: element.id,
-        link: data["link"],
-        likes: int.parse(data["likesCount"].toString()),
-        type: data["type"],
-        uploadedBy: data["uploadedBy"],
-      ));
-    });
+    final pictures = resultToList(result);
 
     result.docs.length < 1
         ? throw (NoMoreItemsException())
@@ -95,50 +90,31 @@ class ItemsDataSourceImpl implements ItemsDataSource {
 
   @override
   Future<List<Picture>> getUserItems(String userId) async {
-    List<Picture> pictures = [];
     var result = await firebaseFirestore
         .collection('pictures')
         .where('uploadedBy', isEqualTo: userId)
         .get();
-    result.docs.forEach((element) {
-      var data = element.data();
-      pictures.add(new Picture(
-        id: element.id,
-        link: data["link"],
-        likes: int.parse(data["likesCount"].toString()),
-        type: data["type"],
-        uploadedBy: data["uploadedBy"],
-      ));
-    });
-    print(userId);
+
+    final pictures = resultToList(result);
 
     return pictures;
   }
 
   @override
   Future<List<Picture>> getUserFavourites(String userId) async {
-    List<Picture> pictures = [];
     var result = await firebaseFirestore
         .collection('pictures')
         .where("likedBy", arrayContains: userId)
         .get();
-    result.docs.forEach((element) {
-      var data = element.data();
-      pictures.add(new Picture(
-        id: element.id,
-        link: data["link"],
-        likes: int.parse(data["likesCount"].toString()),
-        type: data["type"],
-        uploadedBy: data["uploadedBy"],
-      ));
-    });
+
+    final pictures = resultToList(result);
+
     return pictures;
   }
 
   @override
   Future<String> deleteUserItem(String itemId) async {
-    var delete =
-        await firebaseFirestore.collection('pictures').doc(itemId).delete();
+    await firebaseFirestore.collection('pictures').doc(itemId).delete();
     return itemId;
   }
 }

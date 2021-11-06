@@ -4,12 +4,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/favourites.dart';
-import 'package:vantypesapp/features/domain/usecases/add_favourite.dart'
+import 'package:vantypesapp/features/domain/usecases/favourites/add_favourite.dart'
     as addFav;
-import 'package:vantypesapp/features/domain/usecases/get_favourites.dart'
+import 'package:vantypesapp/features/domain/usecases/favourites/get_favourites.dart'
     as getFav;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:vantypesapp/features/domain/usecases/remove_favourite.dart'
+import 'package:vantypesapp/features/domain/usecases/favourites/remove_favourite.dart'
     as remFav;
 
 part 'favourites_event.dart';
@@ -38,16 +38,14 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
       yield* _eitherListOrErrorState(failureOrFavourites);
     }
     if (event is AddFavouriteEvent) {
-      yield AddingFavourites();
       final failureOrAdd = await _addFavourite
           .call(addFav.Params(uid: event.uid, itemId: event.itemId));
-      yield* _eitherListOrErrorState(failureOrAdd);
+      yield* _eitherAddOrErrorState(failureOrAdd);
     }
     if (event is RemoveFavouriteEvent) {
-      yield RemovingFavourites();
       final failureOrRemove = await _removeFavourite
           .call(remFav.Params(uid: event.uid, itemId: event.itemId));
-      yield* _eitherListOrErrorState(failureOrRemove);
+      yield* _eitherRemoveOrErrorState(failureOrRemove);
     }
   }
 
@@ -59,6 +57,30 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
       (response) {
         userFavourites = response.favourites;
         return FavouritesFetchedState(favourites: response);
+      },
+    );
+  }
+
+  Stream<FavouritesState> _eitherAddOrErrorState(
+    Either<Failure, String> failureOrFavourites,
+  ) async* {
+    yield failureOrFavourites.fold(
+      (failure) => ErrorFavouritesState(message: _mapFailureToMessage(failure)),
+      (response) {
+        userFavourites.add(response);
+        return AddedFavourite(itemId: response);
+      },
+    );
+  }
+
+  Stream<FavouritesState> _eitherRemoveOrErrorState(
+    Either<Failure, String> failureOrFavourites,
+  ) async* {
+    yield failureOrFavourites.fold(
+      (failure) => ErrorFavouritesState(message: _mapFailureToMessage(failure)),
+      (response) {
+        userFavourites.remove(response);
+        return RemovedFavourite(itemId: response);
       },
     );
   }

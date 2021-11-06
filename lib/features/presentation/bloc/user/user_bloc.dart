@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
-import 'package:vantypesapp/features/domain/usecases/delete_user_item.dart'
+import 'package:vantypesapp/features/domain/usecases/user/delete_user_item.dart'
     as delete;
-import 'package:vantypesapp/features/domain/usecases/get_user_favourites.dart'
+import 'package:vantypesapp/features/domain/usecases/user/get_user_favourites.dart'
     as userFav;
-import 'package:vantypesapp/features/domain/usecases/get_user_items.dart'
+import 'package:vantypesapp/features/domain/usecases/user/get_user_items.dart'
     as userItems;
 import 'package:easy_localization/easy_localization.dart';
 
@@ -19,7 +19,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final userItems.GetUserItems _getUserItems;
   final userFav.GetUserFavourites _getUserFavourites;
   final delete.DeleteUserItem _deleteUserItem;
-  List<Picture> pictureList = [];
+  List<Picture> items = [];
+  List<Picture> favourites = [];
   bool isFetching = false;
   bool isError = false;
   bool isEnd = false;
@@ -64,8 +65,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return ErrorUserItems(message: _mapFailureToMessage(failure));
       },
       (response) {
-        pictureList = response;
-        return LoadedUserItems(items: pictureList);
+        items = response;
+        return LoadedUserItems(items: items);
       },
     );
   }
@@ -78,8 +79,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return ErrorUserItems(message: _mapFailureToMessage(failure));
       },
       (response) {
-        pictureList.removeWhere((element) => element.id == response);
-        return LoadedUserItems(items: pictureList);
+        items.removeWhere((element) => element.id == response);
+        return LoadedUserItems(items: items);
       },
     );
   }
@@ -92,7 +93,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return ErrorUserItems(message: _mapFailureToMessage(failure));
       },
       (response) {
-        return LoadedFavouriteItems(items: response);
+        favourites = response;
+        return LoadedFavouriteItems(items: favourites);
       },
     );
   }

@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
               Image(
                 image: AssetImage('assets/images/login.png'),
                 width: MediaQuery.of(context).size.width / 2.5,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
               ),
               SizedBox(
                 height: 30.0,

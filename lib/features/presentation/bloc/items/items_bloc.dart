@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/domain/entities/response.dart';
-import 'package:vantypesapp/features/domain/usecases/get_items.dart' as items;
+import 'package:vantypesapp/features/domain/usecases/items/get_items.dart'
+    as items;
 import 'package:easy_localization/easy_localization.dart';
 
 part 'items_event.dart';

@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({Key key}) : super(key: key);
@@ -13,7 +13,7 @@ class _CategoriesPageState extends State<CategoriesPage>
   @override
   bool get wantKeepAlive => true;
 
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,8 @@ class _CategoriesPageState extends State<CategoriesPage>
               Navigator.of(context).pushNamed('/category', arguments: "panel");
             },
             child: Text(
-              "Panel van",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              "panel".tr(),
+              style: textStyle,
             ),
           ),
           ElevatedButton(
@@ -42,8 +42,8 @@ class _CategoriesPageState extends State<CategoriesPage>
                   .pushNamed('/category', arguments: "minibus");
             },
             child: Text(
-              "Minibus",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              "minibus".tr(),
+              style: textStyle,
             ),
           ),
           ElevatedButton(
@@ -52,8 +52,8 @@ class _CategoriesPageState extends State<CategoriesPage>
                   .pushNamed('/category', arguments: "dropside");
             },
             child: Text(
-              "Dropside",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              "dropside".tr(),
+              style: textStyle,
             ),
           ),
           ElevatedButton(
@@ -61,8 +61,8 @@ class _CategoriesPageState extends State<CategoriesPage>
               Navigator.of(context).pushNamed('/category', arguments: "box");
             },
             child: Text(
-              "Box van",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              "box".tr(),
+              style: textStyle,
             ),
           ),
         ],

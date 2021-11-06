@@ -1,101 +1,51 @@
 {
-    "must_verify": "You must verify your phone number",
-    "send": "Send code",
-    "enter_sms": "Enter the code from the SMS",
-    "verify": "Verify",
-    "resend": "Resend Code",
+  "email": "Email",
+  "email_man": "Email is mandatory",
+  "email_hint": "Enter the email",
+  "password": "Password",
+  "password_man": "Password is mandatory",
+  "password_hint": "Enter the password",
+  "password_again": "Password again",
+  "password_again_hint": "Enter the password again",
+  "password_conf_man": "You must confirm password",
+  "password_conf_err": "The two password does not match",
 
-    "lang": "Language",
-    "en": "🇬🇧  English",
-    "hu": "🇭🇺  Hungarian",
-    "logout": "Logout",
+  "login": "Login",
+  "register": "Register",
 
-    "home": "Home",
-    "favourites": "Favourites",
-    "events": "Events",
+  "username": "Username",
+  "username_hint": "Enter username",
+  "username_man": "Username is mandatory",
 
-    "done": "Done",
-    "skip": "Skip",
-    "next": "Next",
+  "theme": "Theme",
+  "dark_mode": "Dark Mode",
+  "lang": "Language",
+  "en": "🇬🇧  English",
+  "hu": "🇭🇺  Hungarian",
+  "logout": "Logout",
 
-    "no_fav": "No favourites added yet!",
+  "home": "Home",
+  "detect": "Detection",
+  "gallery": "Gallery",
+  "favourites": "Favourites",
 
-    "search": "Search",
-    "search_long": "Search in the criptocurrency database",
-    "favourite_long": "Add criptocurrencies to your favourites",
-    "events_long": "Read about upcoming criptocurrency events",
-
-    "circ_supply": "Circulating supply: ",
-    "max_supply": "Max supply: ",
-    "highest": "All time high: ",
-    "num_exch": "Num exchanges: ",
-    "num_pairs": "Num pairs: ",
-    "num_pairs_unmap": "Num pairs unmapped: ",
-    "first_trade": "First trade: ",
-    "first_candle": "First candle: ",
-    "first_order": "First order book: ",
-    "rank": "Rank #",
-    "volume": "Volume: ",
-    "change": "Change: ",
-    "market_cap": "Market cap: ",
-    "dominance": "Dominance: ",
-    "date": "Date: ",
-
-    "active": "active",
-    "inactive": "inactive",
-    "dead": "dead",
-
-    "error_load": "Error loading items!",
-    "error_network": "No internet connection!",
-      "error_server": "Server error!",
-      "error_unexp": "Unexpected error!",
-      "error_search": "No items found!",
-
-      "checkauth_fail": "Authentication check failure",
-      "codesend_fail": "Code send failed!",
-      "logout_fail": "Logout failed",
-      "verify_fail" : "Verification failure",
-      "error_req": "Too many requests!",
+  "my_items": "My items",
+  "my_favourites": "My favourites",
 
 
-      "greet": "Welcome",
-    "set_theme": "Change theme",
-    "set_loc": "Change language",
-    "email": "Email",
-    "email_man": "Email is mandatory",
-    "email_hint": "Enter the email",
-    "password": "Password",
-    "password_man": "Password is mandatory",
-    "password_hint": "Enter the password",
+  "take_photo": "Take a Photo",
+  "pick_gallery": "Pick from Gallery",
+  "restart": "Restart",
+  "upload_img": "Upload Image",
+  "no_detection": "No van detected!",
+  "detection": "The detected type is ",
 
-    "login": "Login",
-    "loginfail": "Invalid credentials",
-    "logoutfail": "Failed to logout",
-    "authfail": "Failed to authenticate",
+  "panel" : "Panel Van",
+  "minibus": "Minibus",
+  "box" : "Box Van",
+  "dropside" : "Dropside Van"
 
-    
-    "serverfailure": "Server failure",
-    "cachefailure": "Cache failure",
-    "pdffailure": "No cached data",
-
-    "unexp_error": "Unexcepted error",
-
-    "change_th": "Theme Changed!",
-    "change_loc": "Language Changed!",
-
-    "no_perm_stor": "No permissions for the storage",
-    "no_perm_cam": "No permissions for the camera",
-
-    "alert_notf": "Not found!",
-    "alert_cont": "No item found with the QR code!",
-    "alert_back": "Back",
-
-    "network_fail": "No internet connection!",
-
-    "start_down": "Starting download...",
-    "file_exists": "File already downloaded",
-    "down_compl": "Download complete",
-    "down_fail": "Download failed"
+  
 
 
 }

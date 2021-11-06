@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/card.dart';
@@ -16,9 +16,9 @@ class CategoryImagesPage extends StatefulWidget {
 
 class _CategoryImagesPageState extends State<CategoryImagesPage> {
   final ScrollController _scrollController = ScrollController();
+  final user = FirebaseAuth.instance.currentUser.displayName;
   ItemsBloc itemsBloc;
   FavouritesBloc favouritesBloc;
-  List<Picture> items = [];
   String type;
 
   @override
@@ -36,6 +36,11 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   void start() {
     sl<ItemsBloc>().add(GetItemsEvent(type: type));
   }
@@ -43,60 +48,77 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
   @override
   Widget build(BuildContext context) {
     type = ModalRoute.of(context).settings.arguments;
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.purple,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-          child: BlocConsumer<ItemsBloc, ItemsState>(
-        bloc: itemsBloc..add(GetItemsEvent(type: type)),
+    return BlocListener<FavouritesBloc, FavouritesState>(
+        bloc: favouritesBloc,
         listener: (context, state) {
-          if (state is ErrorItems) {
-            itemsBloc.isError = true;
+          if (state is AddedFavourite) {
+            itemsBloc.pictureList
+                .firstWhere((element) => element.id == state.itemId)
+                .likedBy
+                .add(user);
           }
+          if (state is RemovedFavourite) {
+            itemsBloc.pictureList
+                .firstWhere((element) => element.id == state.itemId)
+                .likedBy
+                .remove(user);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            foregroundColor: Colors.purple,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: Container(
+              child: BlocConsumer<ItemsBloc, ItemsState>(
+            bloc: itemsBloc..add(GetItemsEvent(type: type)),
+            listener: (context, state) {
+              if (state is ErrorItems) {
+                itemsBloc.isError = true;
+              }
 
-          if (state is LoadedItems) {
-            itemsBloc.isFetching = false;
-            itemsBloc.isError = false;
-            items = state.items;
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadingItems && items.isEmpty) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is ErrorItems && items.isEmpty) {
-            return IconButton(
-              icon: Icon(
-                Icons.refresh,
-                size: 35,
-              ),
-              onPressed: () {
-                itemsBloc.add(GetItemsEvent(type: type));
-              },
-            );
-          }
-          return ListView.separated(
-              controller: _scrollController
-                ..addListener(() {
-                  if (_scrollController.offset ==
-                          _scrollController.position.maxScrollExtent &&
-                      !itemsBloc.isFetching &&
-                      !itemsBloc.isEnd) {
+              if (state is LoadedItems) {
+                itemsBloc.isFetching = false;
+                itemsBloc.isError = false;
+              }
+            },
+            builder: (context, state) {
+              if (state is LoadingItems && itemsBloc.pictureList.isEmpty) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is ErrorItems && itemsBloc.pictureList.isEmpty) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    size: 35,
+                  ),
+                  onPressed: () {
                     itemsBloc.add(GetItemsEvent(type: type));
-                    itemsBloc.isFetching = true;
-                  }
-                }),
-              itemBuilder: (context, index) {
-                return buildCard(context, index, items, favouritesBloc);
-              },
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemCount: items.length);
-        },
-      )),
-    );
+                  },
+                );
+              }
+              return ListView.separated(
+                  controller: _scrollController
+                    ..addListener(() {
+                      if (_scrollController.offset ==
+                              _scrollController.position.maxScrollExtent &&
+                          !itemsBloc.isFetching &&
+                          !itemsBloc.isEnd) {
+                        itemsBloc.add(GetItemsEvent(type: type));
+                        itemsBloc.isFetching = true;
+                      }
+                    }),
+                  itemBuilder: (context, index) {
+                    return buildCard(
+                        context, index, itemsBloc.pictureList, favouritesBloc);
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                  itemCount: itemsBloc.pictureList.length);
+            },
+          )),
+        ));
   }
 }

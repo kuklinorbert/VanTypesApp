@@ -6,6 +6,8 @@ import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_blo
 
 Card buildCard(BuildContext context, int index, List<Picture> items,
     FavouritesBloc favouritesBloc) {
+  final user = FirebaseAuth.instance.currentUser.displayName;
+
   return Card(
       child: Column(
     mainAxisAlignment: MainAxisAlignment.start,
@@ -34,20 +36,19 @@ Card buildCard(BuildContext context, int index, List<Picture> items,
         children: [
           Text(items[index].uploadedBy,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
-          Row(
-            children: [
-              BlocBuilder(
-                  bloc: favouritesBloc,
-                  builder: (context, state) {
-                    if (state is FavouritesFetchedState) {
-                      return favouritesBloc.userFavourites
-                              .contains(items[index].id)
+          BlocBuilder(
+              bloc: favouritesBloc,
+              builder: (context, state) {
+                if (state is FavouritesFetchedState ||
+                    state is AddedFavourite ||
+                    state is RemovedFavourite) {
+                  return Row(
+                    children: [
+                      favouritesBloc.userFavourites.contains(items[index].id)
                           ? IconButton(
                               onPressed: () {
                                 favouritesBloc.add(RemoveFavouriteEvent(
-                                    uid: FirebaseAuth
-                                        .instance.currentUser.displayName,
-                                    itemId: items[index].id));
+                                    uid: user, itemId: items[index].id));
                               },
                               icon: Icon(Icons.favorite))
                           : IconButton(
@@ -57,15 +58,16 @@ Card buildCard(BuildContext context, int index, List<Picture> items,
                                         .instance.currentUser.displayName,
                                     itemId: items[index].id));
                               },
-                              icon: Icon(Icons.favorite_outline));
-                    } else {
-                      return Container();
-                    }
-                  }),
-              Text(items[index].likes.toString(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
-            ],
-          )
+                              icon: Icon(Icons.favorite_outline)),
+                      Text(items[index].likedBy.length.toString(),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w400)),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
         ],
       ),
       SizedBox(
