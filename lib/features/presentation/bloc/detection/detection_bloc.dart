@@ -14,6 +14,7 @@ import 'package:vantypesapp/features/domain/usecases/detection/load_model.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/pick_gallery.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/predict.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/take_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'detection_event.dart';
 part 'detection_state.dart';
@@ -82,7 +83,7 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
     Either<Failure, List> permissionOrDownload,
   ) async* {
     yield permissionOrDownload.fold(
-      (failure) => ErrorState(message: _mapFailureToMessage(failure)),
+      (failure) => DetectionErrorState(message: _mapFailureToMessage(failure)),
       (model) {
         return Prediction(prediction: model);
       },
@@ -94,7 +95,7 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
   ) async* {
     yield permissionOrDownload.fold(
       (failure) {
-        return ErrorState(message: _mapFailureToMessage(failure));
+        return DetectionErrorState(message: _mapFailureToMessage(failure));
       },
       (image) {
         img = File(image[0]);
@@ -109,7 +110,7 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
     Either<Failure, String> permissionOrDownload,
   ) async* {
     yield permissionOrDownload.fold(
-      (failure) => ErrorState(message: _mapFailureToMessage(failure)),
+      (failure) => DetectionErrorState(message: _mapFailureToMessage(failure)),
       (model) {
         return LoadedModelState();
       },
@@ -133,7 +134,7 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
     Either<Failure, PermissionStatus> permissionOrDownload,
   ) async* {
     yield permissionOrDownload.fold(
-      (failure) => ErrorState(message: _mapFailureToMessage(failure)),
+      (failure) => DetectionErrorState(message: _mapFailureToMessage(failure)),
       (permission) {
         return CameraPermissionGrantedState();
       },
@@ -143,15 +144,15 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case LoadModelFailure:
-        return 'failed to load the model';
+        return 'load_model_fail'.tr();
       case ImageFailure:
-        return 'failed to pick image';
+        return 'pick_image_fail'.tr();
       case PredictionFailure:
-        return 'prediction fail';
+        return 'prediction_fail'.tr();
       case PermissionFailure:
-        return 'no permissions';
+        return 'permissions_fail'.tr();
       default:
-        return 'unexpected error';
+        return 'unexp_fail'.tr();
     }
   }
 }

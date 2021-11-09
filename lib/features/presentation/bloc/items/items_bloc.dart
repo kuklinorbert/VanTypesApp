@@ -66,11 +66,11 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case NetworkFailure:
-        return "error_network".tr();
+        return "network_fail".tr();
       case ItemsFailure:
-        return "error_items".tr();
+        return "items_fail".tr();
       default:
-        return 'error_unexp'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

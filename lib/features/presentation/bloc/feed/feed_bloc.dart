@@ -8,23 +8,30 @@ import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:vantypesapp/features/domain/entities/response.dart';
 import 'package:vantypesapp/features/domain/usecases/feed/get_feed_items.dart'
-    as feed;
+    as load;
+import 'package:vantypesapp/features/domain/usecases/feed/refresh_feed_items.dart'
+    as refresh;
 
 part 'feed_event.dart';
 part 'feed_state.dart';
 
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
-  feed.GetFeedItems _getFeedItems;
+  load.GetFeedItems _getFeedItems;
+  refresh.RefreshFeedItems _refreshFeedItemsEvent;
 
   List<Picture> pictureList = [];
   bool isFetching = false;
   bool isError = false;
   bool isEnd = false;
   bool isReset = false;
+  String type = "likes";
   DocumentSnapshot lastDocument;
 
-  FeedBloc({@required feed.GetFeedItems getFeedItems})
+  FeedBloc(
+      {@required load.GetFeedItems getFeedItems,
+      @required refresh.RefreshFeedItems refreshFeedItems})
       : _getFeedItems = getFeedItems,
+        _refreshFeedItemsEvent = refreshFeedItems,
         super(FeedInitial());
 
   @override
@@ -32,9 +39,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (event is GetFeedItemsEvent) {
       yield LoadingFeedItems();
       final failureOrItems = await _getFeedItems
-          .call(feed.Params(type: event.type, lastDocument: lastDocument));
+          .call(load.Params(type: type, lastDocument: lastDocument));
       isReset = false;
       yield* _eitherLoadedOrErrorState(failureOrItems);
+    }
+    if (event is RefreshFeedItemsEvent) {
+      pictureList = [];
+      yield LoadingFeedItems();
+      final failureOrItems =
+          await _refreshFeedItemsEvent.call(refresh.Params(type: type));
+      isReset = false;
+      yield* _eitherRefreshOrErrorState(failureOrItems);
     }
   }
 
@@ -61,14 +76,37 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     );
   }
 
+  Stream<FeedState> _eitherRefreshOrErrorState(
+    Either<Failure, ItemsResponse> failureOrItem,
+  ) async* {
+    yield failureOrItem.fold(
+      (failure) {
+        if (failure == NoMoreItemsFailure()) {
+          isEnd = true;
+          return LoadedFeedItems(items: pictureList);
+        } else {
+          return ErrorFeedItems(message: _mapFailureToMessage(failure));
+        }
+      },
+      (response) {
+        if (response.pictures.length < 4) {
+          isEnd = true;
+        }
+        pictureList = response.pictures;
+        lastDocument = response.lastDocument;
+        return LoadedFeedItems(items: pictureList);
+      },
+    );
+  }
+
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case NetworkFailure:
-        return "error_network".tr();
+        return "network_fail".tr();
       case ItemsFailure:
-        return "error_items".tr();
+        return "items_fail".tr();
       default:
-        return 'error_unexp'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

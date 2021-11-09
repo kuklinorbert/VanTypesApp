@@ -17,11 +17,10 @@ class Authenticated extends AuthState {}
 
 class Unauthenticated extends AuthState {}
 
-class ErrorLoggedState extends AuthState {
+class AuthErrorState extends AuthState {
   final String message;
 
-  ErrorLoggedState({@required this.message});
+  AuthErrorState({@required this.message});
 
-  @override
   List<Object> get props => [message];
 }

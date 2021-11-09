@@ -11,6 +11,8 @@ class UserInitial extends UserState {}
 
 class LoadingUserItems extends UserState {}
 
+class LoadingUserFavourites extends UserState {}
+
 class LoadedUserItems extends UserState {
   final List<Picture> items;
 
@@ -33,6 +35,15 @@ class ErrorUserItems extends UserState {
   final String message;
 
   ErrorUserItems({@required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ErrorUserFavourites extends UserState {
+  final String message;
+
+  ErrorUserFavourites({@required this.message});
 
   @override
   List<Object> get props => [message];

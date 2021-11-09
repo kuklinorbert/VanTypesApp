@@ -21,15 +21,20 @@ class UploadRepositoryImpl implements UploadRepository {
     if (await networkInfo.isConnected) {
       try {
         var time = DateTime.now().millisecondsSinceEpoch.toString();
-        await firebaseStorage.ref("$type/$time.jpg").putFile(file);
+        await firebaseStorage
+            .ref("$type/$time.jpg")
+            .putFile(file)
+            .timeout(Duration(seconds: 3));
         var url = await FirebaseStorage.instance
             .ref('$type/$time.jpg')
-            .getDownloadURL();
+            .getDownloadURL()
+            .timeout(Duration(seconds: 3));
         await firebaseFirestore.collection('pictures').add({
           "likesCount": 0,
           "link": url,
           "type": type,
-          "uploadedBy": FirebaseAuth.instance.currentUser.displayName
+          "uploadedBy": FirebaseAuth.instance.currentUser.displayName,
+          "uploadedOn": FieldValue.serverTimestamp()
         });
         return Right("success");
       } on Exception {

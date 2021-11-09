@@ -3,6 +3,7 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vantypesapp/features/domain/usecases/feed/refresh_feed_items.dart';
 import 'core/util/network_info.dart';
 import 'features/data/datasources/camera_data_source.dart';
 import 'features/data/datasources/favourites_data_source.dart';
@@ -75,7 +76,8 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => ItemsBloc(getItems: sl()));
 
-  sl.registerLazySingleton(() => FeedBloc(getFeedItems: sl()));
+  sl.registerLazySingleton(
+      () => FeedBloc(getFeedItems: sl(), refreshFeedItems: sl()));
 
   sl.registerLazySingleton(() => UploadBloc(uploadImage: sl()));
 
@@ -97,6 +99,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => Register(sl()));
   sl.registerLazySingleton(() => GetItems(sl()));
   sl.registerLazySingleton(() => GetFeedItems(sl()));
+  sl.registerLazySingleton(() => RefreshFeedItems(sl()));
   sl.registerLazySingleton(() => UploadImage(sl()));
   sl.registerLazySingleton(() => GetFavourites(sl()));
   sl.registerLazySingleton(() => AddFavourite(sl()));

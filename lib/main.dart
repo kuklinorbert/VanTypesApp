@@ -6,7 +6,7 @@ import 'package:vantypesapp/features/presentation/pages/category_images_page.dar
 import 'package:vantypesapp/features/presentation/pages/login_page.dart';
 import 'package:vantypesapp/features/presentation/pages/controller_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:vantypesapp/features/presentation/pages/register_page.dart';
+import 'package:vantypesapp/features/presentation/pages/registration_page.dart';
 import 'injection_container.dart' as di;
 
 int selectedTheme;
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             localizationsDelegates: context.localizationDelegates,
             routes: {
               '/login': (context) => LoginPage(),
-              '/register': (context) => RegisterPage(),
+              '/register': (context) => RegistrationPage(),
               '/main': (context) => MainPage(),
               '/category': (context) => CategoryImagesPage(),
             },

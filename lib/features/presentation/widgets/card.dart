@@ -41,7 +41,8 @@ Card buildCard(BuildContext context, int index, List<Picture> items,
               builder: (context, state) {
                 if (state is FavouritesFetchedState ||
                     state is AddedFavourite ||
-                    state is RemovedFavourite) {
+                    state is RemovedFavourite ||
+                    state is ErrorFavouritesState) {
                   return Row(
                     children: [
                       favouritesBloc.userFavourites.contains(items[index].id)

@@ -19,6 +19,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
 
   Stream<RegistrationState> mapEventToState(RegistrationEvent event) async* {
     if (event is RegisterEvent) {
+      yield RegistratingState();
       final result = await _register.call(Params(
           userName: event.userName,
           email: event.email,
@@ -43,17 +44,17 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       case RegistrationFailure:
         return 'registration_fail'.tr();
       case RegistrationInvalidEmailFailure:
-        return 'registration_inv_email'.tr();
+        return 'registration_invalid_email_fail'.tr();
       case RegistrationWeakPasswordFailure:
-        return 'registration_weak_passw'.tr();
+        return 'registration_weak_passw_fail'.tr();
       case RegistrationEmailAlreadyInUseFailure:
-        return 'registration_email_in_use'.tr();
+        return 'registration_email_in_use_fail'.tr();
       case RegistrationUsernameTakenFailure:
-        return 'registration_user_taken'.tr();
+        return 'registration_user_taken_fail'.tr();
       case NetworkFailure:
         return 'network_fail'.tr();
       default:
-        return 'unexp_error'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/features/domain/entities/picture.dart';
 import 'package:vantypesapp/features/domain/usecases/user/delete_user_item.dart'
@@ -21,10 +22,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final delete.DeleteUserItem _deleteUserItem;
   List<Picture> items = [];
   List<Picture> favourites = [];
-  bool isFetching = false;
-  bool isError = false;
-  bool isEnd = false;
-  bool isReset = false;
 
   UserBloc(
       {@required userItems.GetUserItems getUserItems,
@@ -44,7 +41,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       yield* _eitherUserItemsOrErrorState(failureOrItems);
     }
     if (event is GetUserFavouritesEvent) {
-      yield LoadingUserItems();
+      yield LoadingUserFavourites();
       final failureOrFavourites =
           await _getUserFavourites(userFav.Params(userId: event.userId));
       yield* _eitherUserFavouritesOrErrorState(failureOrFavourites);
@@ -80,6 +77,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       },
       (response) {
         items.removeWhere((element) => element.id == response);
+        favourites.removeWhere((element) => element.id == response);
         return LoadedUserItems(items: items);
       },
     );
@@ -90,7 +88,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async* {
     yield failureOrFavourites.fold(
       (failure) {
-        return ErrorUserItems(message: _mapFailureToMessage(failure));
+        return ErrorUserFavourites(message: _mapFailureToMessage(failure));
       },
       (response) {
         favourites = response;
@@ -102,11 +100,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case NetworkFailure:
-        return "error_network".tr();
+        return "network_fail".tr();
       case UserItemsFailure:
-        return "error_items".tr();
+        return "items_fail".tr();
       default:
-        return 'error_unexp'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

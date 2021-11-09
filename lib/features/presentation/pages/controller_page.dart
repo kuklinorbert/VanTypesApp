@@ -17,6 +17,7 @@ import 'package:vantypesapp/features/presentation/pages/user_page.dart';
 import 'package:vantypesapp/features/presentation/pages/categories_page.dart';
 import 'package:vantypesapp/features/presentation/pages/home_page.dart';
 import 'package:vantypesapp/features/presentation/widgets/navbar.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 import 'package:vantypesapp/main.dart';
 
 import '../../../../injection_container.dart';
@@ -40,6 +41,7 @@ class _MainPageState extends State<MainPage> {
     authBloc = sl<AuthBloc>();
     navbarBloc = sl<NavigationbarBloc>();
     _pageController = PageController(initialPage: 0);
+
     super.initState();
   }
 
@@ -173,40 +175,53 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           appBar: AppBar(),
-          body: BlocListener<NavigationbarBloc, NavigationbarState>(
-              bloc: navbarBloc,
-              listener: (context, state) {
-                if (state is NavigationbarHome ||
-                    state is NavigationbarInitial) {
-                  _pageController.jumpToPage(0);
-                }
-                if (state is NavigationbarDetection) {
-                  _pageController.jumpToPage(1);
-                }
+          body: MultiBlocListener(
+            listeners: [
+              BlocListener<NavigationbarBloc, NavigationbarState>(
+                bloc: navbarBloc,
+                listener: (context, state) {
+                  if (state is NavigationbarHome ||
+                      state is NavigationbarInitial) {
+                    _pageController.jumpToPage(0);
+                  }
+                  if (state is NavigationbarDetection) {
+                    _pageController.jumpToPage(1);
+                  }
 
-                if (state is NavigationbarGallery) {
-                  _pageController.jumpToPage(2);
-                }
-                if (state is NavigationbarFavourites) {
-                  _pageController.jumpToPage(3);
-                }
-              },
-              child: PageView(
-                physics: BouncingScrollPhysics(),
-                controller: _pageController,
-                onPageChanged: (index) {
-                  if (index == 0) navbarBloc.add(HomeSelected());
-                  if (index == 1) navbarBloc.add(DetectionSelected());
-                  if (index == 2) navbarBloc.add(GallerySelected());
-                  if (index == 3) navbarBloc.add(FavouritesSelected());
+                  if (state is NavigationbarGallery) {
+                    _pageController.jumpToPage(2);
+                  }
+                  if (state is NavigationbarFavourites) {
+                    _pageController.jumpToPage(3);
+                  }
                 },
-                children: [
-                  HomePage(),
-                  DetectionPage(),
-                  CategoriesPage(),
-                  UserPage()
-                ],
-              )),
+              ),
+              BlocListener<FavouritesBloc, FavouritesState>(
+                  bloc: sl<FavouritesBloc>(),
+                  listener: (context, state) {
+                    if (state is FavouritesErrorState) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(buildSnackBar(context, state.message));
+                    }
+                  })
+            ],
+            child: PageView(
+              physics: BouncingScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: (index) {
+                if (index == 0) navbarBloc.add(HomeSelected());
+                if (index == 1) navbarBloc.add(DetectionSelected());
+                if (index == 2) navbarBloc.add(GallerySelected());
+                if (index == 3) navbarBloc.add(FavouritesSelected());
+              },
+              children: [
+                HomePage(),
+                DetectionPage(),
+                CategoriesPage(),
+                UserPage()
+              ],
+            ),
+          ),
           bottomNavigationBar:
               BlocBuilder<NavigationbarBloc, NavigationbarState>(
             bloc: navbarBloc,

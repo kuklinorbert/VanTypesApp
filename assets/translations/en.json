@@ -10,6 +10,8 @@
   "password_conf_man": "You must confirm password",
   "password_conf_err": "The two password does not match",
 
+  "no_items": "No items to load",
+
   "login": "Login",
   "register": "Register",
 
@@ -32,6 +34,9 @@
   "my_items": "My items",
   "my_favourites": "My favourites",
 
+  "by_likes": "Likes",
+  "by_date": "Date uploaded",
+  "sort_by": "Sort by",
 
   "take_photo": "Take a Photo",
   "pick_gallery": "Pick from Gallery",
@@ -43,9 +48,31 @@
   "panel" : "Panel Van",
   "minibus": "Minibus",
   "box" : "Box Van",
-  "dropside" : "Dropside Van"
+  "dropside" : "Dropside Van",
+
+  "login_fail": "Invalid credentials",
+  "logout_fail": "Failed to log out!",
+  "auth_fail": "Authentication failure",
+
+  "network_fail": "No internet connection!",
+  "unexp_fail": "Unexpected error occurred!",
+
+  "load_model_fail": "Failed to load model!",
+  "pick_image_fail": "No image picked!",
+  "prediction_fail": "Prediction failure!",
+  "permissions_fail": "No permissions granted!",
+
+  "favourites_fail": "Favourites error!",
+
+  "items_fail": "Failed to load items",
+
+  "registration_fail": "Registration failure",
+  "registration_invalid_email_fail": "Invalid email address!", 
+  "registration_weak_passw_fail": "Weak password",
+  "registration_email_in_use_fail": "Email in use",
+  "registration_user_taken_fail": "Username is already taken",
+
+  "upload_fail": "Failed to upload image"
 
   
-
-
 }

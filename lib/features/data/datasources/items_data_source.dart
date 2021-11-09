@@ -11,6 +11,7 @@ abstract class ItemsDataSource {
   Future<List<Picture>> getUserItems(String userId);
   Future<List<Picture>> getUserFavourites(String userId);
   Future<String> deleteUserItem(String itemId);
+  Future<ItemsResponse> refreshFeedItems(String type);
 }
 
 class ItemsDataSourceImpl implements ItemsDataSource {
@@ -80,6 +81,34 @@ class ItemsDataSourceImpl implements ItemsDataSource {
     }
 
     final pictures = resultToList(result);
+
+    result.docs.length < 1
+        ? throw (NoMoreItemsException())
+        : lastDocument = result.docs[result.docs.length - 1];
+
+    return ItemsResponse(pictures: pictures, lastDocument: lastDocument);
+  }
+
+  @override
+  Future<ItemsResponse> refreshFeedItems(String type) async {
+    var result;
+    if (type == "likes") {
+      result = await firebaseFirestore
+          .collection('pictures')
+          .orderBy('likesCount', descending: true)
+          .limit(4)
+          .get();
+    }
+    if (type == "time") {
+      result = await firebaseFirestore
+          .collection('pictures')
+          .orderBy('uploadedOn', descending: true)
+          .limit(4)
+          .get();
+    }
+
+    final pictures = resultToList(result);
+    var lastDocument;
 
     result.docs.length < 1
         ? throw (NoMoreItemsException())

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/registration/registration_bloc.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 
 import '../../../injection_container.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key key}) : super(key: key);
+class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({Key key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _RegistrationPageState createState() => _RegistrationPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegistrationPageState extends State<RegistrationPage> {
   final GlobalKey<FormState> _registerKey = GlobalKey<FormState>();
   String userName, inputEmail, password, passwordConf;
   RegistrationBloc registrationBloc;
@@ -38,8 +39,10 @@ class _RegisterPageState extends State<RegisterPage> {
             listener: (BuildContext context, state) {
               if (state is RegistrationSuccess) {
                 Navigator.of(context).pushReplacementNamed('/main');
-              } else if (state is RegistrationError) {
-                print(state.message);
+              }
+              if (state is RegistrationError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(buildSnackBar(context, state.message));
               }
             },
             child: Center(
@@ -162,20 +165,31 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(
                           height: 15.0,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_registerKey.currentState.validate()) {
-                              registrationBloc.add(RegisterEvent(
-                                  userName: userName,
-                                  email: inputEmail,
-                                  password: password));
-                            }
-                          },
-                          child: Text(
-                            "register".tr(),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ),
+                        BlocBuilder<RegistrationBloc, RegistrationState>(
+                            bloc: registrationBloc,
+                            builder: (context, state) {
+                              if (state is RegistratingState) {
+                                return CircularProgressIndicator();
+                              } else if (state is RegistrationSuccess) {
+                                return Container();
+                              } else {
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    if (_registerKey.currentState.validate()) {
+                                      registrationBloc
+                                        ..add(RegisterEvent(
+                                            userName: userName,
+                                            email: inputEmail,
+                                            password: password));
+                                    }
+                                  },
+                                  child: Text(
+                                    "register".tr(),
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                );
+                              }
+                            }),
                       ],
                     ),
                   ),

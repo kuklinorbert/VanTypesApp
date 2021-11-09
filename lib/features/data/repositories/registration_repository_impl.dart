@@ -29,7 +29,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository {
         if (!user.exists) {
           final result = await _firebaseAuth.createUserWithEmailAndPassword(
               email: email, password: password);
-          result.user.updateDisplayName(userName);
+          await result.user.updateDisplayName(userName);
           await _firebaseFirestore
               .collection('users')
               .doc(userName)

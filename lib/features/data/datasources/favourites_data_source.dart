@@ -26,7 +26,8 @@ class FavouritesDataSourceImpl implements FavouritesDataSource {
   @override
   Future<String> addFavourite(String uid, String itemId) async {
     await firebaseFirestore.collection("pictures").doc(itemId).update({
-      "likedBy": FieldValue.arrayUnion([uid])
+      "likedBy": FieldValue.arrayUnion([uid]),
+      "likesCount": FieldValue.increment(1)
     });
 
     return itemId;
@@ -35,7 +36,8 @@ class FavouritesDataSourceImpl implements FavouritesDataSource {
   @override
   Future<String> removeFavourite(String uid, String itemId) async {
     await firebaseFirestore.collection("pictures").doc(itemId).update({
-      "likedBy": FieldValue.arrayRemove([uid])
+      "likedBy": FieldValue.arrayRemove([uid]),
+      "likesCount": FieldValue.increment(-1)
     });
     return itemId;
   }

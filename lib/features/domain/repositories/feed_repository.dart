@@ -6,4 +6,5 @@ import 'package:vantypesapp/features/domain/entities/response.dart';
 abstract class FeedRepository {
   Future<Either<Failure, ItemsResponse>> getItems(
       String type, DocumentSnapshot lastDocument);
+  Future<Either<Failure, ItemsResponse>> refreshItems(String type);
 }

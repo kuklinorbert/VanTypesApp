@@ -4,6 +4,7 @@ import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/features/presentation/bloc/detection/detection_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 
 import '../../../injection_container.dart';
 
@@ -51,13 +52,16 @@ class _DetectionPageState extends State<DetectionPage>
               detectionBloc.add(TakeImageEvent());
             } else if (state is StoragePermissionGrantedState) {
               detectionBloc.add(PickGalleryEvent());
-            } else if (state is ErrorState) {
+            } else if (state is DetectionErrorState) {
               ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+                  .showSnackBar(buildSnackBar(context, state.message));
             } else if (state is PermissionDeniedState) {
               ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+                  .showSnackBar(buildSnackBar(context, state.message));
               detectionBloc.add(PermissionDeniedEvent());
+            } else if (state is DetectionErrorState) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(buildSnackBar(context, state.message));
             }
           },
           buildWhen: (previous, current) {
@@ -253,34 +257,42 @@ class _DetectionPageState extends State<DetectionPage>
                     SizedBox(
                       width: 20,
                     ),
-                    BlocBuilder<UploadBloc, UploadState>(
-                        builder: (BuildContext context, uploadState) {
-                      if (uploadState is UploadInitial) {
-                        return ElevatedButton.icon(
-                            onPressed: detectionState.prediction.isNotEmpty
-                                ? () {
-                                    uploadBloc.add(UploadImageEvent(
-                                        image: detectionBloc.img,
-                                        type: detectionState.prediction[0]
-                                            ["detectedClass"]));
-                                  }
-                                : null,
-                            icon: Icon(Icons.file_upload),
-                            label: Text("upload_img".tr()),
-                            style: ButtonStyle(
-                              padding:
-                                  MaterialStateProperty.all(EdgeInsets.all(20)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.blue),
-                            ));
-                      } else if (uploadState is UploadingState) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (uploadState is UploadCompleteState) {
-                        return Icon(Icons.check);
-                      } else {
-                        return Container();
-                      }
-                    })
+                    BlocConsumer<UploadBloc, UploadState>(
+                        bloc: uploadBloc,
+                        listener: (context, uploadState) {
+                          if (uploadState is UploadErrorState) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                buildSnackBar(context, uploadState.message));
+                          }
+                        },
+                        builder: (context, uploadState) {
+                          if (uploadState is UploadInitial ||
+                              uploadState is UploadErrorState) {
+                            return ElevatedButton.icon(
+                                onPressed: detectionState.prediction.isNotEmpty
+                                    ? () {
+                                        uploadBloc.add(UploadImageEvent(
+                                            image: detectionBloc.img,
+                                            type: detectionState.prediction[0]
+                                                ["detectedClass"]));
+                                      }
+                                    : null,
+                                icon: Icon(Icons.file_upload),
+                                label: Text("upload_img".tr()),
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.all(20)),
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue),
+                                ));
+                          } else if (uploadState is UploadingState) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (uploadState is UploadCompleteState) {
+                            return Icon(Icons.check);
+                          } else {
+                            return Container();
+                          }
+                        }),
                   ],
                 ),
               );

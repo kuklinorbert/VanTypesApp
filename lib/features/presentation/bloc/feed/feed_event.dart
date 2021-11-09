@@ -7,11 +7,6 @@ abstract class FeedEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetFeedItemsEvent extends FeedEvent {
-  final String type;
+class GetFeedItemsEvent extends FeedEvent {}
 
-  GetFeedItemsEvent({@required this.type});
-
-  @override
-  List<Object> get props => [type];
-}
+class RefreshFeedItemsEvent extends FeedEvent {}

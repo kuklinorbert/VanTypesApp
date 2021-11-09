@@ -32,3 +32,11 @@ class FavouritesFetchedState extends FavouritesState {
 
   List<Object> get props => [favourites];
 }
+
+class FavouritesErrorState extends FavouritesState {
+  final String message;
+
+  FavouritesErrorState({@required this.message});
+
+  List<Object> get props => [message];
+}

@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
-import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
-import 'package:vantypesapp/features/presentation/widgets/card.dart';
-import 'package:vantypesapp/features/presentation/widgets/card_user.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
+import 'package:vantypesapp/features/presentation/widgets/user/user_favourites.dart';
+import 'package:vantypesapp/features/presentation/widgets/user/user_items.dart';
 
 import '../../../injection_container.dart';
 
@@ -43,16 +43,14 @@ class _UserPageState extends State<UserPage>
           BlocListener<UserBloc, UserState>(
             bloc: userBloc,
             listener: (context, state) {
-              if (state is LoadedUserItems) {
-                userBloc.isFetching = false;
-                userBloc.isError = false;
+              print(state);
+              if (state is ErrorUserItems) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(buildSnackBar(context, state.message));
               }
-              if (state is LoadedFavouriteItems) {
-                userBloc.isFetching = false;
-                userBloc.isError = false;
-              }
-              if (state is ErrorItems) {
-                userBloc.isError = false;
+              if (state is ErrorUserFavourites) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(buildSnackBar(context, state.message));
               }
             },
           ),
@@ -77,8 +75,8 @@ class _UserPageState extends State<UserPage>
                         .likedBy
                         .remove(user);
                   }
+                  userBloc.add(GetUserFavouritesEvent(userId: user));
                 }
-                userBloc.add(GetUserFavouritesEvent(userId: user));
               })
         ],
         child: DefaultTabController(
@@ -123,87 +121,14 @@ class _UserPageState extends State<UserPage>
               body: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  BlocBuilder<UserBloc, UserState>(
-                      bloc: userBloc,
-                      builder: (context, state) {
-                        return SafeArea(
-                            top: false,
-                            bottom: false,
-                            child: Builder(
-                              builder: (BuildContext context) {
-                                return CustomScrollView(
-                                  key: PageStorageKey<String>("first"),
-                                  slivers: [
-                                    SliverOverlapInjector(
-                                      handle: NestedScrollView
-                                          .sliverOverlapAbsorberHandleFor(
-                                              context),
-                                    ),
-                                    SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                          (BuildContext context, int index) {
-                                        return Column(
-                                          children: [
-                                            buildCard(
-                                                context,
-                                                index,
-                                                userBloc.favourites,
-                                                favouritesBloc),
-                                            SizedBox(
-                                              height: 10,
-                                            )
-                                          ],
-                                        );
-                                      },
-                                          childCount:
-                                              userBloc.favourites.length),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ));
-                      }),
-                  BlocBuilder<UserBloc, UserState>(
-                      bloc: userBloc,
-                      builder: (context, state) {
-                        return SafeArea(
-                            top: false,
-                            bottom: false,
-                            child: Builder(
-                              builder: (BuildContext context) {
-                                return CustomScrollView(
-                                  key: PageStorageKey<String>("second"),
-                                  slivers: [
-                                    SliverOverlapInjector(
-                                      handle: NestedScrollView
-                                          .sliverOverlapAbsorberHandleFor(
-                                              context),
-                                    ),
-                                    SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                          (BuildContext context, int index) {
-                                        return Column(
-                                          children: [
-                                            buildCardUser(
-                                                context,
-                                                index,
-                                                userBloc.items,
-                                                favouritesBloc,
-                                                userBloc),
-                                            SizedBox(
-                                              height: 10,
-                                            )
-                                          ],
-                                        );
-                                      },
-                                          childCount: userBloc
-                                              .items.length), //items.length),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ));
-                      })
+                  UserFavourites(
+                      userBloc: userBloc,
+                      favouritesBloc: favouritesBloc,
+                      user: user),
+                  UserItems(
+                      userBloc: userBloc,
+                      favouritesBloc: favouritesBloc,
+                      user: user)
                 ],
               )),
         ));

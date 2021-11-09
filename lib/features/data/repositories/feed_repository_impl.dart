@@ -32,4 +32,20 @@ class FeedRepositoryImpl implements FeedRepository {
       return Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, ItemsResponse>> refreshItems(String type) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await itemsDataSource.refreshFeedItems(type);
+        return Right(result);
+      } on NoMoreItemsException {
+        return Left(NoMoreItemsFailure());
+      } on Exception {
+        return Left(ItemsFailure());
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
 }

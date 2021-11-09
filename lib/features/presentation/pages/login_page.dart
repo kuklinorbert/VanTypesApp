@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:vantypesapp/features/presentation/bloc/auth/auth_bloc.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 
 import '../../../../injection_container.dart';
 
@@ -42,8 +43,9 @@ class _LoginPageState extends State<LoginPage> {
     return BlocListener<AuthBloc, AuthState>(
       bloc: authBloc,
       listener: (context, state) {
-        if (state is ErrorLoggedState) {
-          //ScaffoldMessenger.of(context).showSnackBar(buildSnackBar(context, state.message));
+        if (state is AuthErrorState) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(buildSnackBar(context, state.message));
         } else if (state is Authenticated) {
           Navigator.of(context).pushReplacementNamed('/main');
         }

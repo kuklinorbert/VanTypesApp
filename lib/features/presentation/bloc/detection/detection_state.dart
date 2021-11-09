@@ -40,10 +40,10 @@ class ImageLoadingState extends DetectionState {}
 
 class ImageLoadedState extends DetectionState {}
 
-class ErrorState extends DetectionState {
+class DetectionErrorState extends DetectionState {
   final String message;
 
-  ErrorState({@required this.message});
+  DetectionErrorState({@required this.message});
 
   @override
   List<Object> get props => [message];

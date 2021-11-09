@@ -42,11 +42,11 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case NetworkFailure:
-        return "error_network".tr();
-      case ItemsFailure:
-        return "error_items".tr();
+        return "network_fail".tr();
+      case UploadFailure:
+        return "upload_fail".tr();
       default:
-        return 'error_unexp'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

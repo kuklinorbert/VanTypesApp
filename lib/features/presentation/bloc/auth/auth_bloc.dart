@@ -62,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Either<Failure, void> failureOrLogout,
   ) async* {
     yield failureOrLogout.fold(
-      (failure) => ErrorLoggedState(message: _mapFailureToMessage(failure)),
+      (failure) => AuthErrorState(message: _mapFailureToMessage(failure)),
       (user) {
         return Unauthenticated();
       },
@@ -73,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Either<Failure, UserCredential> failureOrLogin,
   ) async* {
     yield failureOrLogin.fold(
-      (failure) => ErrorLoggedState(message: _mapFailureToMessage(failure)),
+      (failure) => AuthErrorState(message: _mapFailureToMessage(failure)),
       (user) {
         return Authenticated();
       },
@@ -83,15 +83,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case LogInFailure:
-        return 'loginfail'.tr();
+        return 'login_fail'.tr();
       case LogOutFailure:
-        return 'logoutfail'.tr();
+        return 'logout_fail'.tr();
       case CheckAuthFailure:
-        return 'authfail'.tr();
+        return 'auth_fail'.tr();
       case NetworkFailure:
         return 'network_fail'.tr();
       default:
-        return 'unexp_error'.tr();
+        return 'unexp_fail'.tr();
     }
   }
 }

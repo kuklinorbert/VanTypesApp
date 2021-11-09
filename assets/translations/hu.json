@@ -10,6 +10,8 @@
   "password_conf_man": "Muszáj megerősíteni a jelszót",
   "password_conf_err": "A két jelszó nem egyezik",
 
+  "no_items": "Nincs betölteni való elem",
+
   "login": "Bejelentkezés",
   "register": "Regisztrálás",
 
@@ -32,6 +34,9 @@
   "my_items": "Saját képeim",
   "my_favourites": "Kedvenceim",
 
+  "by_likes": "Kedvelések alapján",
+  "by_date": "Feltöltési idő alapján",
+  "sort_by": "Rendezés",
 
   "take_photo": "Kép készítése",
   "pick_gallery": "Választás a gallériából",
@@ -43,9 +48,31 @@
   "panel" : "Furgon",
   "minibus": "Minibusz",
   "box" : "Dobozos furgon",
-  "dropside" : "Platós furgon"
+  "dropside" : "Platós furgon",
 
   
+  "login_fail": "Invalid credentials",
+  "logout_fail": "Failed to log out!",
+  "auth_fail": "Authentication failure",
 
+  "network_fail": "No internet connection!",
+  "unexp_fail": "Unexpected error occurred!",
+
+  "load_model_fail": "Failed to load model!",
+  "pick_image_fail": "No image picked!",
+  "prediction_fail": "Prediction failure!",
+  "permissions_fail": "No permissions granted!",
+
+  "favourites_fail": "Favourites error!",
+
+  "items_fail": "Failed to load items",
+
+  "registration_fail": "Registration failure",
+  "registration_invalid_email_fail": "Invalid email address!", 
+  "registration_weak_passw_fail": "Weak password",
+  "registration_email_in_use_fail": "Email in use",
+  "registration_user_taken_fail": "Username is already taken",
+
+  "upload_fail": "Failed to upload image"
 
 }

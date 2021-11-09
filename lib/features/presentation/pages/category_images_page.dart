@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/items/items_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/card.dart';
+import 'package:vantypesapp/features/presentation/widgets/no_items.dart';
+import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 
 import '../../../injection_container.dart';
 
@@ -76,6 +78,8 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
             listener: (context, state) {
               if (state is ErrorItems) {
                 itemsBloc.isError = true;
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(buildSnackBar(context, state.message));
               }
 
               if (state is LoadedItems) {
@@ -89,34 +93,39 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
                   child: CircularProgressIndicator(),
                 );
               } else if (state is ErrorItems && itemsBloc.pictureList.isEmpty) {
-                return IconButton(
-                  icon: Icon(
-                    Icons.refresh,
-                    size: 35,
+                return Center(
+                  child: IconButton(
+                    iconSize: 40,
+                    icon: Icon(
+                      Icons.refresh,
+                    ),
+                    onPressed: () {
+                      favouritesBloc.add(GetFavouritesEvent(uid: user));
+                      itemsBloc..add(GetItemsEvent(type: type));
+                    },
                   ),
-                  onPressed: () {
-                    itemsBloc.add(GetItemsEvent(type: type));
-                  },
                 );
               }
-              return ListView.separated(
-                  controller: _scrollController
-                    ..addListener(() {
-                      if (_scrollController.offset ==
-                              _scrollController.position.maxScrollExtent &&
-                          !itemsBloc.isFetching &&
-                          !itemsBloc.isEnd) {
-                        itemsBloc.add(GetItemsEvent(type: type));
-                        itemsBloc.isFetching = true;
-                      }
-                    }),
-                  itemBuilder: (context, index) {
-                    return buildCard(
-                        context, index, itemsBloc.pictureList, favouritesBloc);
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 10),
-                  itemCount: itemsBloc.pictureList.length);
+              return itemsBloc.pictureList.isEmpty
+                  ? buildnoItems(context)
+                  : ListView.separated(
+                      controller: _scrollController
+                        ..addListener(() {
+                          if (_scrollController.offset ==
+                                  _scrollController.position.maxScrollExtent &&
+                              !itemsBloc.isFetching &&
+                              !itemsBloc.isEnd) {
+                            itemsBloc.add(GetItemsEvent(type: type));
+                            itemsBloc.isFetching = true;
+                          }
+                        }),
+                      itemBuilder: (context, index) {
+                        return buildCard(context, index, itemsBloc.pictureList,
+                            favouritesBloc);
+                      },
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                      itemCount: itemsBloc.pictureList.length);
             },
           )),
         ));
