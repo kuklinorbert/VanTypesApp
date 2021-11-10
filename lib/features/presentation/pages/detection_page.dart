@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/features/presentation/bloc/detection/detection_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/upload/upload_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
 
 import '../../../injection_container.dart';
@@ -263,6 +265,13 @@ class _DetectionPageState extends State<DetectionPage>
                           if (uploadState is UploadErrorState) {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 buildSnackBar(context, uploadState.message));
+                          }
+                          if (uploadState is UploadCompleteState) {
+                            UserBloc userBloc = sl<UserBloc>();
+                            userBloc
+                              ..add(GetUserItemsEvent(
+                                  userId: FirebaseAuth
+                                      .instance.currentUser.displayName));
                           }
                         },
                         builder: (context, uploadState) {

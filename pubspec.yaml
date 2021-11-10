@@ -66,6 +66,10 @@ flutter:
     - assets/model/labels.txt
     - assets/images/login.png
     - assets/images/sad.png
+    - assets/images/dropside.png
+    - assets/images/panel.png
+    - assets/images/box.png
+    - assets/images/minibus.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

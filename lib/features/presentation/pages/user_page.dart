@@ -95,6 +95,10 @@ class _UserPageState extends State<UserPage>
                         Container(
                           height: 50,
                           child: TabBar(
+                            labelColor: Theme.of(context).colorScheme ==
+                                    ColorScheme.light()
+                                ? Colors.black
+                                : Colors.white,
                             onTap: (index) {
                               if (index == 0) {
                                 userBloc
