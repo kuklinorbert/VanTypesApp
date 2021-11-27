@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
+import 'package:vantypesapp/features/domain/entities/item.dart';
 import 'package:vantypesapp/features/domain/usecases/user/delete_user_item.dart'
     as delete;
 import 'package:vantypesapp/features/domain/usecases/user/get_user_favourites.dart'
@@ -20,8 +20,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final userItems.GetUserItems _getUserItems;
   final userFav.GetUserFavourites _getUserFavourites;
   final delete.DeleteUserItem _deleteUserItem;
-  List<Picture> items = [];
-  List<Picture> favourites = [];
+  List<Item> items = [];
+  List<Item> favourites = [];
 
   UserBloc(
       {@required userItems.GetUserItems getUserItems,
@@ -55,7 +55,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   Stream<UserState> _eitherUserItemsOrErrorState(
-    Either<Failure, List<Picture>> failureOrItems,
+    Either<Failure, List<Item>> failureOrItems,
   ) async* {
     yield failureOrItems.fold(
       (failure) {
@@ -84,7 +84,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   Stream<UserState> _eitherUserFavouritesOrErrorState(
-    Either<Failure, List<Picture>> failureOrFavourites,
+    Either<Failure, List<Item>> failureOrFavourites,
   ) async* {
     yield failureOrFavourites.fold(
       (failure) {

@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
-import 'package:vantypesapp/features/domain/entities/response.dart';
+import 'package:vantypesapp/features/domain/entities/items_response.dart';
 import 'package:vantypesapp/features/domain/repositories/feed_repository.dart';
 
 class GetFeedItems extends UseCase<ItemsResponse, Params> {

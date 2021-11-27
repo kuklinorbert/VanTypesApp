@@ -45,8 +45,6 @@ import 'features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
 import 'features/presentation/bloc/registration/registration_bloc.dart';
 import 'features/presentation/bloc/upload/upload_bloc.dart';
 import 'features/presentation/bloc/user/user_bloc.dart';
-
-import 'core/util/image_converter.dart';
 import 'features/domain/usecases/authentication/check_auth.dart';
 import 'features/domain/usecases/authentication/login.dart';
 import 'features/domain/usecases/authentication/logout.dart';
@@ -72,7 +70,7 @@ Future<void> init() async {
   sl.registerLazySingleton(
       () => AuthBloc(login: sl(), logout: sl(), checkAuth: sl()));
 
-  sl.registerLazySingleton(() => NavigationbarBloc());
+  sl.registerFactory(() => NavigationbarBloc());
 
   sl.registerLazySingleton(() => ItemsBloc(getItems: sl()));
 
@@ -109,7 +107,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteUserItem(sl()));
 
   sl.registerLazySingleton<ClassifierRepository>(() => ClassifierRepositoryImpl(
-      galleryDataSource: sl(), cameraDataSource: sl(), imageConverter: sl()));
+      galleryDataSource: sl(), cameraDataSource: sl()));
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(firebaseAuth: sl(), networkInfo: sl()));
   sl.registerLazySingleton<RegistrationRepository>(() =>
@@ -142,7 +140,6 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
-  sl.registerLazySingleton(() => ImageConverter());
   sl.registerLazySingleton(() => ImagePicker());
   sl.registerLazySingleton(() => DataConnectionChecker());
   sl.registerLazySingleton(() => FirebaseAuth.instance);

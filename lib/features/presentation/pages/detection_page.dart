@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -130,7 +132,7 @@ class _DetectionPageState extends State<DetectionPage>
                         height: size.height / 2.2,
                         child: Container(
                           child: Image.file(
-                            detectionBloc.img,
+                            File(detectionBloc.img),
                             fit: BoxFit.contain,
                             alignment: Alignment.topCenter,
                           ),
@@ -281,7 +283,7 @@ class _DetectionPageState extends State<DetectionPage>
                                 onPressed: detectionState.prediction.isNotEmpty
                                     ? () {
                                         uploadBloc.add(UploadImageEvent(
-                                            image: detectionBloc.img,
+                                            image: File(detectionBloc.img),
                                             type: detectionState.prediction[0]
                                                 ["detectedClass"]));
                                       }

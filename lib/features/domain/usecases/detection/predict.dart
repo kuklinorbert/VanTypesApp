@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vantypesapp/core/error/failure.dart';
@@ -17,7 +15,7 @@ class Predict extends UseCase<List, Params> {
 }
 
 class Params extends Equatable {
-  final File file;
+  final String file;
 
   Params({@required this.file});
 

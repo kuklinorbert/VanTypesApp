@@ -5,7 +5,7 @@ import 'package:vantypesapp/core/util/network_info.dart';
 import 'package:vantypesapp/features/data/datasources/items_data_source.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
-import 'package:vantypesapp/features/domain/entities/response.dart';
+import 'package:vantypesapp/features/domain/entities/items_response.dart';
 import 'package:vantypesapp/features/domain/repositories/items_repository.dart';
 
 class ItemsRepositoryImpl implements ItemsRepository {

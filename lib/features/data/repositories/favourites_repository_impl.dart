@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/util/network_info.dart';
 import 'package:vantypesapp/features/data/datasources/favourites_data_source.dart';
-import 'package:vantypesapp/features/domain/entities/favourites.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:vantypesapp/features/domain/repositories/favourites_repository.dart';
@@ -29,7 +28,7 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
   }
 
   @override
-  Future<Either<Failure, Favourites>> getFavourites(String uid) async {
+  Future<Either<Failure, List<String>>> getFavourites(String uid) async {
     if (await networkInfo.isConnected) {
       try {
         final result = await favouritesDataSource.getFavourites(uid);

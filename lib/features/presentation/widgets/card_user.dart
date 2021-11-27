@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
+import 'package:vantypesapp/features/domain/entities/item.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/feed/feed_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/user/user_bloc.dart';
 
 import '../../../injection_container.dart';
 
-Card buildCardUser(BuildContext context, int index, List<Picture> items,
+Card buildCardUser(BuildContext context, int index, List<Item> items,
     FavouritesBloc favouritesBloc, UserBloc userBloc) {
   return Card(
       child: Column(

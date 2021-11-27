@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vantypesapp/features/domain/entities/favourites.dart';
 
 abstract class FavouritesDataSource {
-  Future<Favourites> getFavourites(String uid);
+  Future<List<String>> getFavourites(String uid);
   Future<String> addFavourite(String uid, String itemId);
   Future<String> removeFavourite(String uid, String itemId);
 }
@@ -10,7 +9,7 @@ abstract class FavouritesDataSource {
 class FavouritesDataSourceImpl implements FavouritesDataSource {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   @override
-  Future<Favourites> getFavourites(String uid) async {
+  Future<List<String>> getFavourites(String uid) async {
     List<String> items = [];
     var result = await firebaseFirestore
         .collection("pictures")
@@ -20,7 +19,7 @@ class FavouritesDataSourceImpl implements FavouritesDataSource {
       items.add(element.id);
     });
 
-    return Favourites(favourites: items);
+    return items;
   }
 
   @override

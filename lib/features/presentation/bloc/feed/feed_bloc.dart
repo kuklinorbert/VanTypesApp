@@ -4,9 +4,9 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
+import 'package:vantypesapp/features/domain/entities/item.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:vantypesapp/features/domain/entities/response.dart';
+import 'package:vantypesapp/features/domain/entities/items_response.dart';
 import 'package:vantypesapp/features/domain/usecases/feed/get_feed_items.dart'
     as load;
 import 'package:vantypesapp/features/domain/usecases/feed/refresh_feed_items.dart'
@@ -19,7 +19,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   load.GetFeedItems _getFeedItems;
   refresh.RefreshFeedItems _refreshFeedItemsEvent;
 
-  List<Picture> pictureList = [];
+  List<Item> pictureList = [];
   bool isFetching = false;
   bool isError = false;
   bool isEnd = false;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
-class Picture extends Equatable {
-  Picture(
+class Item extends Equatable {
+  Item(
       {@required this.id,
       @required this.link,
       @required this.uploadedBy,

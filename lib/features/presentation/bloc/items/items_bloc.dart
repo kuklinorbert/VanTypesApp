@@ -4,8 +4,8 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
-import 'package:vantypesapp/features/domain/entities/response.dart';
+import 'package:vantypesapp/features/domain/entities/item.dart';
+import 'package:vantypesapp/features/domain/entities/items_response.dart';
 import 'package:vantypesapp/features/domain/usecases/items/get_items.dart'
     as items;
 import 'package:easy_localization/easy_localization.dart';
@@ -15,7 +15,7 @@ part 'items_state.dart';
 
 class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
   final items.GetItems _getItems;
-  List<Picture> pictureList = [];
+  List<Item> pictureList = [];
   bool isFetching = false;
   bool isError = false;
   bool isEnd = false;

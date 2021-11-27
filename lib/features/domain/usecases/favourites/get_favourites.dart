@@ -3,16 +3,15 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
-import 'package:vantypesapp/features/domain/entities/favourites.dart';
 import 'package:vantypesapp/features/domain/repositories/favourites_repository.dart';
 
-class GetFavourites extends UseCase<Favourites, Params> {
+class GetFavourites extends UseCase<List<String>, Params> {
   final FavouritesRepository favouritesRepository;
 
   GetFavourites(this.favouritesRepository);
 
   @override
-  Future<Either<Failure, Favourites>> call(Params params) async {
+  Future<Either<Failure, List<String>>> call(Params params) async {
     return await favouritesRepository.getFavourites(params.uid);
   }
 }

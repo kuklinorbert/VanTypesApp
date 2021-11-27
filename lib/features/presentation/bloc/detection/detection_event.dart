@@ -21,7 +21,7 @@ class TakeImageEvent extends DetectionEvent {}
 class PickGalleryEvent extends DetectionEvent {}
 
 class PredictEvent extends DetectionEvent {
-  final File image;
+  final String image;
 
   PredictEvent({@required this.image});
 

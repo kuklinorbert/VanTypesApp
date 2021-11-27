@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/failure.dart';
-import 'package:vantypesapp/features/domain/entities/favourites.dart';
 import 'package:vantypesapp/features/domain/usecases/favourites/add_favourite.dart'
     as addFav;
 import 'package:vantypesapp/features/domain/usecases/favourites/get_favourites.dart'
@@ -50,12 +49,12 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Stream<FavouritesState> _eitherListOrErrorState(
-    Either<Failure, Favourites> failureOrFavourites,
+    Either<Failure, List<String>> failureOrFavourites,
   ) async* {
     yield failureOrFavourites.fold(
       (failure) => ErrorFavouritesState(message: _mapFailureToMessage(failure)),
       (response) {
-        userFavourites = response.favourites;
+        userFavourites = response;
         return FavouritesFetchedState(favourites: response);
       },
     );

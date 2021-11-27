@@ -14,7 +14,7 @@ class LoadingUserItems extends UserState {}
 class LoadingUserFavourites extends UserState {}
 
 class LoadedUserItems extends UserState {
-  final List<Picture> items;
+  final List<Item> items;
 
   LoadedUserItems({@required this.items});
 
@@ -23,7 +23,7 @@ class LoadedUserItems extends UserState {
 }
 
 class LoadedFavouriteItems extends UserState {
-  final List<Picture> items;
+  final List<Item> items;
 
   LoadedFavouriteItems({@required this.items});
 

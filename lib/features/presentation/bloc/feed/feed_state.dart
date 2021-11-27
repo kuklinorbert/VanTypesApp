@@ -12,7 +12,7 @@ class FeedInitial extends FeedState {}
 class LoadingFeedItems extends FeedState {}
 
 class LoadedFeedItems extends FeedState {
-  final List<Picture> items;
+  final List<Item> items;
 
   LoadedFeedItems({@required this.items});
 

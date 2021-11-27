@@ -24,11 +24,11 @@ class UploadRepositoryImpl implements UploadRepository {
         await firebaseStorage
             .ref("$type/$time.jpg")
             .putFile(file)
-            .timeout(Duration(seconds: 3));
+            .timeout(Duration(seconds: 15));
         var url = await FirebaseStorage.instance
             .ref('$type/$time.jpg')
             .getDownloadURL()
-            .timeout(Duration(seconds: 3));
+            .timeout(Duration(seconds: 15));
         await firebaseFirestore.collection('pictures').add({
           "likesCount": 0,
           "link": url,

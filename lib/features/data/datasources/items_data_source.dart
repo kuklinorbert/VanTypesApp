@@ -1,28 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vantypesapp/core/error/exceptions.dart';
-import 'package:vantypesapp/features/domain/entities/picture.dart';
-import 'package:vantypesapp/features/domain/entities/response.dart';
+import 'package:vantypesapp/features/data/models/item_model.dart';
+import 'package:vantypesapp/features/data/models/response_model.dart';
 
 abstract class ItemsDataSource {
-  Future<ItemsResponse> getPictures(String type, DocumentSnapshot lastDocument);
-  Future<ItemsResponse> getFeedPictures(
+  Future<ItemsResponseModel> getPictures(
       String type, DocumentSnapshot lastDocument);
-  Future<List<Picture>> getUserItems(String userId);
-  Future<List<Picture>> getUserFavourites(String userId);
+  Future<ItemsResponseModel> getFeedPictures(
+      String type, DocumentSnapshot lastDocument);
+  Future<List<ItemModel>> getUserItems(String userId);
+  Future<List<ItemModel>> getUserFavourites(String userId);
   Future<String> deleteUserItem(String itemId);
-  Future<ItemsResponse> refreshFeedItems(String type);
+  Future<ItemsResponseModel> refreshFeedItems(String type);
 }
 
 class ItemsDataSourceImpl implements ItemsDataSource {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   ItemsDataSourceImpl({@required this.firebaseFirestore});
 
-  List<Picture> resultToList(dynamic result) {
-    List<Picture> pictures = [];
+  List<ItemModel> resultToList(dynamic result) {
+    List<ItemModel> pictures = [];
     result.docs.forEach((element) {
       var data = element.data();
-      pictures.add(new Picture(
+      pictures.add(new ItemModel(
           id: element.id,
           link: data["link"],
           type: data["type"],
@@ -34,7 +35,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
   }
 
   @override
-  Future<ItemsResponse> getPictures(
+  Future<ItemsResponseModel> getPictures(
       String type, DocumentSnapshot lastDocument) async {
     var result;
     if (lastDocument == null) {
@@ -58,11 +59,11 @@ class ItemsDataSourceImpl implements ItemsDataSource {
         ? throw (NoMoreItemsException())
         : lastDocument = result.docs[result.docs.length - 1];
 
-    return ItemsResponse(pictures: pictures, lastDocument: lastDocument);
+    return ItemsResponseModel(pictures: pictures, lastDocument: lastDocument);
   }
 
   @override
-  Future<ItemsResponse> getFeedPictures(
+  Future<ItemsResponseModel> getFeedPictures(
       String type, DocumentSnapshot<Object> lastDocument) async {
     var result;
     if (lastDocument == null) {
@@ -86,11 +87,11 @@ class ItemsDataSourceImpl implements ItemsDataSource {
         ? throw (NoMoreItemsException())
         : lastDocument = result.docs[result.docs.length - 1];
 
-    return ItemsResponse(pictures: pictures, lastDocument: lastDocument);
+    return ItemsResponseModel(pictures: pictures, lastDocument: lastDocument);
   }
 
   @override
-  Future<ItemsResponse> refreshFeedItems(String type) async {
+  Future<ItemsResponseModel> refreshFeedItems(String type) async {
     var result;
     if (type == "likes") {
       result = await firebaseFirestore
@@ -114,11 +115,11 @@ class ItemsDataSourceImpl implements ItemsDataSource {
         ? throw (NoMoreItemsException())
         : lastDocument = result.docs[result.docs.length - 1];
 
-    return ItemsResponse(pictures: pictures, lastDocument: lastDocument);
+    return ItemsResponseModel(pictures: pictures, lastDocument: lastDocument);
   }
 
   @override
-  Future<List<Picture>> getUserItems(String userId) async {
+  Future<List<ItemModel>> getUserItems(String userId) async {
     var result = await firebaseFirestore
         .collection('pictures')
         .where('uploadedBy', isEqualTo: userId)
@@ -130,7 +131,7 @@ class ItemsDataSourceImpl implements ItemsDataSource {
   }
 
   @override
-  Future<List<Picture>> getUserFavourites(String userId) async {
+  Future<List<ItemModel>> getUserFavourites(String userId) async {
     var result = await firebaseFirestore
         .collection('pictures')
         .where("likedBy", arrayContains: userId)

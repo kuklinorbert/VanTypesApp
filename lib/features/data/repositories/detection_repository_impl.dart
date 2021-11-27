@@ -4,22 +4,18 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
-import 'package:vantypesapp/core/util/image_converter.dart';
 import 'package:vantypesapp/features/data/datasources/camera_data_source.dart';
 import 'package:vantypesapp/features/data/datasources/gallery_data_source.dart';
-import 'dart:io';
+import 'package:vantypesapp/features/domain/entities/picked_image.dart';
 
 import 'package:vantypesapp/features/domain/repositories/detection_repository.dart';
 
 class ClassifierRepositoryImpl implements ClassifierRepository {
   final GalleryDataSource galleryDataSource;
   final CameraDataSource cameraDataSource;
-  final ImageConverter imageConverter;
 
   ClassifierRepositoryImpl(
-      {@required this.galleryDataSource,
-      @required this.cameraDataSource,
-      @required this.imageConverter});
+      {@required this.galleryDataSource, @required this.cameraDataSource});
 
   @override
   Future<Either<Failure, PermissionStatus>> checkStoragePermission() async {
@@ -54,25 +50,20 @@ class ClassifierRepositoryImpl implements ClassifierRepository {
   }
 
   @override
-  Future<Either<Failure, List>> pickGallery() async {
+  Future<Either<Failure, PickedImage>> pickGallery() async {
     try {
       final image = await galleryDataSource.getCameraImage();
-      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-      return Right([
-        image.path,
-        decodedImage.width.toDouble(),
-        decodedImage.height.toDouble()
-      ]);
+      return Right(image);
     } on Exception {
       return Left(ImageFailure());
     }
   }
 
   @override
-  Future<Either<Failure, List>> predict(File image) async {
+  Future<Either<Failure, List>> predict(String image) async {
     try {
       var output = await Tflite.detectObjectOnImage(
-          path: image.path, threshold: 0.7, numResultsPerClass: 1);
+          path: image, threshold: 0.7, numResultsPerClass: 1);
       return Right(output);
     } on Exception {
       return Left(PredictionFailure());
@@ -80,15 +71,10 @@ class ClassifierRepositoryImpl implements ClassifierRepository {
   }
 
   @override
-  Future<Either<Failure, List>> takeImage() async {
+  Future<Either<Failure, PickedImage>> takeImage() async {
     try {
       final image = await cameraDataSource.getCameraImage();
-      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-      return Right([
-        image.path,
-        decodedImage.width.toDouble(),
-        decodedImage.height.toDouble()
-      ]);
+      return Right(image);
     } on Exception {
       return Left(ImageFailure());
     }

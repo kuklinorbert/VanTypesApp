@@ -12,7 +12,7 @@ class ItemsInitial extends ItemsState {}
 class LoadingItems extends ItemsState {}
 
 class LoadedItems extends ItemsState {
-  final List<Picture> items;
+  final List<Item> items;
 
   LoadedItems({@required this.items});
 

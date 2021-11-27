@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -8,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:vantypesapp/core/usecases/usecase.dart';
+import 'package:vantypesapp/features/domain/entities/picked_image.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/check_camera_permission.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/check_storage_permission.dart';
 import 'package:vantypesapp/features/domain/usecases/detection/load_model.dart';
@@ -27,7 +26,7 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
   final Predict _predict;
   final TakeImage _takeImage;
 
-  File img;
+  String img;
   double imgW = 0;
   double imgH = 0;
 
@@ -91,16 +90,16 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
   }
 
   Stream<DetectionState> _eitherImageOrError(
-    Either<Failure, List> permissionOrDownload,
+    Either<Failure, PickedImage> permissionOrDownload,
   ) async* {
     yield permissionOrDownload.fold(
       (failure) {
         return DetectionErrorState(message: _mapFailureToMessage(failure));
       },
       (image) {
-        img = File(image[0]);
-        imgW = image[1];
-        imgH = image[2];
+        img = image.path;
+        imgW = image.width;
+        imgH = image.height;
         return ImageLoadedState();
       },
     );

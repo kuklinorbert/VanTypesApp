@@ -26,7 +26,7 @@ class RemovedFavourite extends FavouritesState {
 }
 
 class FavouritesFetchedState extends FavouritesState {
-  final Favourites favourites;
+  final List<String> favourites;
 
   FavouritesFetchedState({@required this.favourites});
 
