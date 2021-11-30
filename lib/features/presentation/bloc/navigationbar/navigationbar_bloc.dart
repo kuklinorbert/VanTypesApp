@@ -7,7 +7,7 @@ part 'navigationbar_event.dart';
 part 'navigationbar_state.dart';
 
 class NavigationbarBloc extends Bloc<NavigationbarEvent, NavigationbarState> {
-  NavigationbarBloc() : super(NavigationbarInitial());
+  NavigationbarBloc() : super(NavigationbarHome());
 
   @override
   Stream<NavigationbarState> mapEventToState(

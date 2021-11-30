@@ -51,28 +51,28 @@
   "dropside" : "Platós furgon",
 
   
-  "login_fail": "Invalid credentials",
-  "logout_fail": "Failed to log out!",
-  "auth_fail": "Authentication failure",
+  "login_fail": "Helytelen felhasználói adatok",
+  "logout_fail": "Kijelentkezési hiba!",
+  "auth_fail": "Authentikációs hiba!",
 
-  "network_fail": "No internet connection!",
-  "unexp_fail": "Unexpected error occurred!",
+  "network_fail": "Nincs internetkapcsolat!",
+  "unexp_fail": "Váratlan hiba történt!",
 
-  "load_model_fail": "Failed to load model!",
-  "pick_image_fail": "No image picked!",
-  "prediction_fail": "Prediction failure!",
-  "permissions_fail": "No permissions granted!",
+  "load_model_fail": "Nem sikerült betölteni a modellt!",
+  "pick_image_fail": "Nem lett kép kiválasztva!",
+  "prediction_fail": "Észlelési hiba!",
+  "permissions_fail": "Nem állnak rendelkezésre engedélyek!",
 
-  "favourites_fail": "Favourites error!",
+  "favourites_fail": "Kedvencek hiba!",
 
-  "items_fail": "Failed to load items",
+  "items_fail": "Nem sikerült betölteni az elemeket",
 
-  "registration_fail": "Registration failure",
-  "registration_invalid_email_fail": "Invalid email address!", 
-  "registration_weak_passw_fail": "Weak password",
-  "registration_email_in_use_fail": "Email in use",
-  "registration_user_taken_fail": "Username is already taken",
+  "registration_fail": "Regisztrációs hiba",
+  "registration_invalid_email_fail": "Helytelen email cím!", 
+  "registration_weak_passw_fail": "Gyenge jelszó!",
+  "registration_email_in_use_fail": "Az email már használatban van!",
+  "registration_user_taken_fail": "A felhasználónév már foglalt!",
 
-  "upload_fail": "Failed to upload image"
+  "upload_fail": "Nem sikerült feltölteni a képet"
 
 }

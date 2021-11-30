@@ -36,8 +36,6 @@ class PermissionDeniedState extends DetectionState {
   List<Object> get props => [message];
 }
 
-class ImageLoadingState extends DetectionState {}
-
 class ImageLoadedState extends DetectionState {}
 
 class DetectionErrorState extends DetectionState {

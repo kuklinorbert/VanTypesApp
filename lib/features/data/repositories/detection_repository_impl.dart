@@ -4,18 +4,15 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:tflite/tflite.dart';
 import 'package:vantypesapp/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
-import 'package:vantypesapp/features/data/datasources/camera_data_source.dart';
-import 'package:vantypesapp/features/data/datasources/gallery_data_source.dart';
+import 'package:vantypesapp/features/data/datasources/device_data_source.dart';
 import 'package:vantypesapp/features/domain/entities/picked_image.dart';
 
 import 'package:vantypesapp/features/domain/repositories/detection_repository.dart';
 
 class ClassifierRepositoryImpl implements ClassifierRepository {
-  final GalleryDataSource galleryDataSource;
-  final CameraDataSource cameraDataSource;
+  final DeviceDataSource deviceDataSource;
 
-  ClassifierRepositoryImpl(
-      {@required this.galleryDataSource, @required this.cameraDataSource});
+  ClassifierRepositoryImpl({@required this.deviceDataSource});
 
   @override
   Future<Either<Failure, PermissionStatus>> checkStoragePermission() async {
@@ -52,7 +49,7 @@ class ClassifierRepositoryImpl implements ClassifierRepository {
   @override
   Future<Either<Failure, PickedImage>> pickGallery() async {
     try {
-      final image = await galleryDataSource.getCameraImage();
+      final image = await deviceDataSource.getGalleryImage();
       return Right(image);
     } on Exception {
       return Left(ImageFailure());
@@ -73,7 +70,7 @@ class ClassifierRepositoryImpl implements ClassifierRepository {
   @override
   Future<Either<Failure, PickedImage>> takeImage() async {
     try {
-      final image = await cameraDataSource.getCameraImage();
+      final image = await deviceDataSource.getCameraImage();
       return Right(image);
     } on Exception {
       return Left(ImageFailure());

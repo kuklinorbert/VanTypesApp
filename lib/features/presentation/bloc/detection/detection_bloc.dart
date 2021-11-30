@@ -60,11 +60,9 @@ class DetectionBloc extends Bloc<DetectionEvent, DetectionState> {
       final perm = await _checkStoragePermission.call(NoParams());
       yield* _eitherStoragePermissionOrError(perm);
     } else if (event is TakeImageEvent) {
-      yield ImageLoadingState();
       final img = await _takeImage.call(NoParams());
       yield* _eitherImageOrError(img);
     } else if (event is PickGalleryEvent) {
-      yield ImageLoadingState();
       final img = await _pickGallery.call(NoParams());
       yield* _eitherImageOrError(img);
     } else if (event is PredictEvent) {

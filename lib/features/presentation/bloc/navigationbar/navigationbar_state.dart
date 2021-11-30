@@ -7,8 +7,6 @@ abstract class NavigationbarState extends Equatable {
   List<Object> get props => [];
 }
 
-class NavigationbarInitial extends NavigationbarState {}
-
 class NavigationbarHome extends NavigationbarState {}
 
 class NavigationbarFavourites extends NavigationbarState {}

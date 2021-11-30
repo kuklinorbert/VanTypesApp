@@ -180,14 +180,12 @@ class _MainPageState extends State<MainPage> {
               BlocListener<NavigationbarBloc, NavigationbarState>(
                 bloc: navbarBloc,
                 listener: (context, state) {
-                  if (state is NavigationbarHome ||
-                      state is NavigationbarInitial) {
+                  if (state is NavigationbarHome) {
                     _pageController.jumpToPage(0);
                   }
                   if (state is NavigationbarDetection) {
                     _pageController.jumpToPage(1);
                   }
-
                   if (state is NavigationbarGallery) {
                     _pageController.jumpToPage(2);
                   }
@@ -226,7 +224,7 @@ class _MainPageState extends State<MainPage> {
               BlocBuilder<NavigationbarBloc, NavigationbarState>(
             bloc: navbarBloc,
             builder: (context, state) {
-              if (state is NavigationbarHome || state is NavigationbarInitial) {
+              if (state is NavigationbarHome) {
                 return buildNavbar(navbarBloc, 0);
               }
               if (state is NavigationbarDetection) {

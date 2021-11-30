@@ -185,7 +185,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   },
                                   child: Text(
                                     "register".tr(),
-                                    style: Theme.of(context).textTheme.button,
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 );
                               }

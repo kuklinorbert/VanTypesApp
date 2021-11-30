@@ -120,8 +120,36 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
                           }
                         }),
                       itemBuilder: (context, index) {
-                        return buildCard(context, index, itemsBloc.pictureList,
-                            favouritesBloc);
+                        return (!itemsBloc.isEnd &&
+                                index >= itemsBloc.pictureList.length - 1)
+                            ? (itemsBloc.isError == false)
+                                ? itemsBloc.isEnd == true
+                                    ? Container()
+                                    : Center(
+                                        child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 15),
+                                        child: CircularProgressIndicator(),
+                                      ))
+                                : Center(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.refresh,
+                                          size: 35,
+                                        ),
+                                        onPressed: () {
+                                          itemsBloc.isError = false;
+                                          itemsBloc
+                                              .add(GetItemsEvent(type: type));
+                                        },
+                                      ),
+                                    ),
+                                  )
+                            : buildCard(context, index, itemsBloc.pictureList,
+                                favouritesBloc);
                       },
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 10),

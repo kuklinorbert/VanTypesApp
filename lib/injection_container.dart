@@ -3,11 +3,10 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vantypesapp/features/data/datasources/device_data_source.dart';
 import 'package:vantypesapp/features/domain/usecases/feed/refresh_feed_items.dart';
 import 'core/util/network_info.dart';
-import 'features/data/datasources/camera_data_source.dart';
 import 'features/data/datasources/favourites_data_source.dart';
-import 'features/data/datasources/gallery_data_source.dart';
 import 'features/data/datasources/items_data_source.dart';
 import 'features/data/repositories/auth_repository_impl.dart';
 import 'features/data/repositories/detection_repository_impl.dart';
@@ -40,6 +39,7 @@ import 'features/presentation/bloc/auth/auth_bloc.dart';
 import 'features/presentation/bloc/detection/detection_bloc.dart';
 import 'features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'features/presentation/bloc/feed/feed_bloc.dart';
+import 'features/presentation/bloc/floating_button_bloc/floating_button_bloc.dart';
 import 'features/presentation/bloc/items/items_bloc.dart';
 import 'features/presentation/bloc/navigationbar/navigationbar_bloc.dart';
 import 'features/presentation/bloc/registration/registration_bloc.dart';
@@ -85,6 +85,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UserBloc(
       getUserItems: sl(), getUserFavourites: sl(), deleteUserItem: sl()));
 
+  sl.registerLazySingleton(() => FloatingButtonBloc());
   sl.registerLazySingleton(() => CheckCameraPermission(sl()));
   sl.registerLazySingleton(() => CheckStoragePermission(sl()));
   sl.registerLazySingleton(() => LoadModel(sl()));
@@ -106,8 +107,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUserFavourites(sl()));
   sl.registerLazySingleton(() => DeleteUserItem(sl()));
 
-  sl.registerLazySingleton<ClassifierRepository>(() => ClassifierRepositoryImpl(
-      galleryDataSource: sl(), cameraDataSource: sl()));
+  sl.registerLazySingleton<ClassifierRepository>(
+      () => ClassifierRepositoryImpl(deviceDataSource: sl()));
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(firebaseAuth: sl(), networkInfo: sl()));
   sl.registerLazySingleton<RegistrationRepository>(() =>
@@ -124,10 +125,8 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRepository>(
       () => UserRepositoryImpl(itemsDataSource: sl(), networkInfo: sl()));
 
-  sl.registerLazySingleton<CameraDataSource>(
-      () => CameraDataSourceImpl(imagePicker: sl()));
-  sl.registerLazySingleton<GalleryDataSource>(
-      () => GalleryDataSourceImpl(imagePicker: sl()));
+  sl.registerLazySingleton<DeviceDataSource>(
+      () => DeviceDataSourceImpl(imagePicker: sl()));
   sl.registerLazySingleton<ItemsDataSource>(
       () => ItemsDataSourceImpl(firebaseFirestore: sl()));
   sl.registerLazySingleton<FavouritesDataSource>(

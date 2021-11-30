@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/favourites/favourites_bloc.dart';
 import 'package:vantypesapp/features/presentation/bloc/feed/feed_bloc.dart';
+import 'package:vantypesapp/features/presentation/bloc/floating_button_bloc/floating_button_bloc.dart';
 import 'package:vantypesapp/features/presentation/widgets/card.dart';
 import 'package:vantypesapp/features/presentation/widgets/no_items.dart';
 import 'package:vantypesapp/features/presentation/widgets/snackbar.dart';
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage>
   final ScrollController _scrollController = ScrollController();
   FeedBloc feedBloc;
   FavouritesBloc favouritesBloc;
+  FloatingButtonBloc floatingButtonBloc;
   bool isFabVisible = true;
   final user = FirebaseAuth.instance.currentUser.displayName;
 
@@ -35,6 +37,7 @@ class _HomePageState extends State<HomePage>
     favouritesBloc = sl<FavouritesBloc>()
       ..add(GetFavouritesEvent(
           uid: FirebaseAuth.instance.currentUser.displayName));
+    floatingButtonBloc = sl<FloatingButtonBloc>();
     super.initState();
   }
 
@@ -49,57 +52,68 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: isFabVisible
-          ? FloatingActionButton(
-              child: Icon(Icons.sort),
-              onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, bottom: 15, top: 15),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "sort_by".tr(),
-                                style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.favorite),
-                            title: Text(
-                              "by_likes".tr(),
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            onTap: () {
-                              feedBloc.add(RefreshFeedItemsEvent());
-                              feedBloc.type = "likes";
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.date_range),
-                            title: Text(
-                              "by_date".tr(),
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            onTap: () {
-                              feedBloc.add(RefreshFeedItemsEvent());
-                              feedBloc.type = "time";
-                              Navigator.pop(context);
-                            },
-                          )
-                        ],
-                      );
-                    });
-              },
-            )
-          : null,
+      floatingActionButton:
+          BlocBuilder<FloatingButtonBloc, FloatingButtonState>(
+        bloc: floatingButtonBloc,
+        builder: (context, state) {
+          print(state);
+          if (state is FloatingVisibleState) {
+            return AnimatedOpacity(
+                opacity: floatingButtonBloc.isVisible ? 1.0 : 0.0,
+                duration: Duration(seconds: 1000),
+                child: FloatingActionButton(
+                    child: Icon(Icons.sort),
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, bottom: 15, top: 15),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "sort_by".tr(),
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  ),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.favorite),
+                                  title: Text(
+                                    "by_likes".tr(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  onTap: () {
+                                    feedBloc.add(RefreshFeedItemsEvent());
+                                    feedBloc.type = "likes";
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.date_range),
+                                  title: Text(
+                                    "by_date".tr(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  onTap: () {
+                                    feedBloc.add(RefreshFeedItemsEvent());
+                                    feedBloc.type = "time";
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    }));
+          } else {
+            return Container();
+          }
+        },
+      ),
       body: BlocListener<FavouritesBloc, FavouritesState>(
         bloc: favouritesBloc,
         listener: (context, state) {
@@ -133,11 +147,20 @@ class _HomePageState extends State<HomePage>
             }
 
             if (state is LoadedFeedItems) {
+              print('fetching finished!');
               feedBloc.isFetching = false;
               feedBloc.isError = false;
             }
           },
+          buildWhen: (previous, current) {
+            if (previous is LoadedFeedItems && current is LoadedFeedItems) {
+              return false;
+            } else {
+              return true;
+            }
+          },
           builder: (context, state) {
+            print(state);
             if (state is LoadingFeedItems && feedBloc.pictureList.isEmpty) {
               return Center(
                 child: CircularProgressIndicator(),
@@ -164,10 +187,18 @@ class _HomePageState extends State<HomePage>
               child: NotificationListener<UserScrollNotification>(
                 onNotification: (notification) {
                   if (notification.direction == ScrollDirection.forward) {
-                    if (!isFabVisible) setState(() => isFabVisible = true);
+                    // if (!isFabVisible)
+                    //   // setState(() {
+                    //   //   isFabVisible = true;
+                    //   // });
+                    floatingButtonBloc.add(FloatingVisible());
                   } else if (notification.direction ==
                       ScrollDirection.reverse) {
-                    if (isFabVisible) setState(() => isFabVisible = false);
+                    //if (isFabVisible)
+                    // setState(() {
+                    //   isFabVisible = false;
+                    // });
+                    floatingButtonBloc.add(FloatingNotVisible());
                   }
                   return true;
                 },
@@ -181,6 +212,7 @@ class _HomePageState extends State<HomePage>
                                         .position.maxScrollExtent &&
                                 !feedBloc.isFetching &&
                                 !feedBloc.isEnd) {
+                              print('fetching');
                               feedBloc.add(GetFeedItemsEvent());
                               feedBloc.isFetching = true;
                             }

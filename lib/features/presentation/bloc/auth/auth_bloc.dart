@@ -27,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _login = login,
         _logout = logout,
         _checkAuth = checkAuth,
-        super(CheckAuthState());
+        super(CheckingAuthState());
 
   @override
   Stream<AuthState> mapEventToState(
@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _checkAuth.call(NoParams());
       yield* _eitherAuthOrErrorState(result);
     } else if (event is LoginEvent) {
-      yield CheckingLoginState();
+      yield LoggingInState();
       final result = await _login
           .call(Params(email: event.email, password: event.password));
       yield* _eitherLoginOrErrorState(result);
@@ -62,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Either<Failure, void> failureOrLogout,
   ) async* {
     yield failureOrLogout.fold(
-      (failure) => AuthErrorState(message: _mapFailureToMessage(failure)),
+      (failure) => LoginErrorState(message: _mapFailureToMessage(failure)),
       (user) {
         return Unauthenticated();
       },
@@ -73,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Either<Failure, UserCredential> failureOrLogin,
   ) async* {
     yield failureOrLogin.fold(
-      (failure) => AuthErrorState(message: _mapFailureToMessage(failure)),
+      (failure) => LoginErrorState(message: _mapFailureToMessage(failure)),
       (user) {
         return Authenticated();
       },

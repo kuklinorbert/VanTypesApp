@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    authBloc = sl<AuthBloc>();
+    authBloc = sl<AuthBloc>()..add(CheckAuthEvent());
   }
 
   @override
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     return BlocListener<AuthBloc, AuthState>(
       bloc: authBloc,
       listener: (context, state) {
-        if (state is AuthErrorState) {
+        if (state is LoginErrorState) {
           ScaffoldMessenger.of(context)
               .showSnackBar(buildSnackBar(context, state.message));
         } else if (state is Authenticated) {
@@ -51,11 +51,11 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: BlocBuilder<AuthBloc, AuthState>(
-        bloc: sl<AuthBloc>()..add(CheckAuthEvent()),
+        bloc: authBloc,
         builder: (BuildContext context, state) {
-          if (state is CheckAuthState) {
+          if (state is CheckingAuthState) {
             return Center(child: CircularProgressIndicator());
-          } else if (state is CheckingLoginState) {
+          } else if (state is LoggingInState) {
             return Center(child: CircularProgressIndicator());
           } else if (state is Authenticated) {
             return Center(child: CircularProgressIndicator());
@@ -139,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: Text(
                   "login".tr(),
-                  style: Theme.of(context).textTheme.button,
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               Divider(),
@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: Text(
                   "register".tr(),
-                  style: Theme.of(context).textTheme.button,
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vantypesapp/core/util/themes.dart';
 import 'package:vantypesapp/features/presentation/pages/category_images_page.dart';
@@ -18,6 +19,8 @@ void main() async {
   await Firebase.initializeApp();
   await di.init();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   bool memory = prefs.getBool('isDark');
   if (memory != null && memory) {
     darkNotifier.value = true;
