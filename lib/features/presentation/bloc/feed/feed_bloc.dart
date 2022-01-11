@@ -39,7 +39,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Stream<FeedState> mapEventToState(FeedEvent event) async* {
     if (event is GetFeedItemsEvent) {
       yield LoadingFeedItems();
-      print('wonder how');
       final failureOrItems = await _getFeedItems
           .call(load.Params(type: type, lastDocument: lastDocument));
       isReset = false;

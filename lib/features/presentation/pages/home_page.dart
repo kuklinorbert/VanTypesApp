@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage>
           BlocBuilder<FloatingButtonBloc, FloatingButtonState>(
         bloc: floatingButtonBloc,
         builder: (context, state) {
-          print(state);
           if (state is FloatingVisibleState) {
             return AnimatedOpacity(
                 opacity: floatingButtonBloc.isVisible ? 1.0 : 0.0,
@@ -147,7 +146,6 @@ class _HomePageState extends State<HomePage>
             }
 
             if (state is LoadedFeedItems) {
-              print('fetching finished!');
               feedBloc.isFetching = false;
               feedBloc.isError = false;
             }
@@ -160,7 +158,6 @@ class _HomePageState extends State<HomePage>
             }
           },
           builder: (context, state) {
-            print(state);
             if (state is LoadingFeedItems && feedBloc.pictureList.isEmpty) {
               return Center(
                 child: CircularProgressIndicator(),
@@ -212,7 +209,6 @@ class _HomePageState extends State<HomePage>
                                         .position.maxScrollExtent &&
                                 !feedBloc.isFetching &&
                                 !feedBloc.isEnd) {
-                              print('fetching');
                               feedBloc.add(GetFeedItemsEvent());
                               feedBloc.isFetching = true;
                             }

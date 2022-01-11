@@ -45,6 +45,7 @@ class _DetectionPageState extends State<DetectionPage>
   }
 
   Widget buildBody(BuildContext context) {
+    Color blue = Color.fromRGBO(63, 136, 197, 1);
     Size size = MediaQuery.of(context).size;
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       BlocConsumer<DetectionBloc, DetectionState>(
@@ -207,7 +208,7 @@ class _DetectionPageState extends State<DetectionPage>
                         detectionBloc.add(CheckCameraPermissionEvent());
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: Color.fromRGBO(63, 136, 197, 1),
+                          primary: blue,
                           fixedSize:
                               Size(size.width * 0.55, size.height * 0.08),
                           shape: RoundedRectangleBorder(
@@ -225,7 +226,7 @@ class _DetectionPageState extends State<DetectionPage>
                         detectionBloc.add(CheckStoragePermissionEvent());
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: Color.fromRGBO(63, 136, 197, 1),
+                          primary: blue,
                           fixedSize:
                               Size(size.width * 0.55, size.height * 0.08),
                           shape: RoundedRectangleBorder(
@@ -255,7 +256,7 @@ class _DetectionPageState extends State<DetectionPage>
                       label: Text("restart").tr(),
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all(EdgeInsets.all(20)),
-                        backgroundColor: MaterialStateProperty.all(Colors.blue),
+                        backgroundColor: MaterialStateProperty.all(blue),
                       ),
                     ),
                     SizedBox(
@@ -294,7 +295,7 @@ class _DetectionPageState extends State<DetectionPage>
                                   padding: MaterialStateProperty.all(
                                       EdgeInsets.all(20)),
                                   backgroundColor:
-                                      MaterialStateProperty.all(Colors.blue),
+                                      MaterialStateProperty.all(blue),
                                 ));
                           } else if (uploadState is UploadingState) {
                             return Center(child: CircularProgressIndicator());

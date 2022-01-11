@@ -68,7 +68,7 @@ class _CategoryImagesPageState extends State<CategoryImagesPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            foregroundColor: Colors.purple,
+            foregroundColor: Theme.of(context).colorScheme.secondary,
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),

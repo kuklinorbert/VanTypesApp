@@ -37,13 +37,11 @@ class _UserPageState extends State<UserPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return MultiBlocListener(
         listeners: [
           BlocListener<UserBloc, UserState>(
             bloc: userBloc,
             listener: (context, state) {
-              print(state);
               if (state is ErrorUserItems) {
                 ScaffoldMessenger.of(context)
                     .showSnackBar(buildSnackBar(context, state.message));
@@ -95,10 +93,11 @@ class _UserPageState extends State<UserPage>
                         Container(
                           height: 50,
                           child: TabBar(
-                            labelColor: Theme.of(context).colorScheme ==
-                                    ColorScheme.light()
-                                ? Colors.black
-                                : Colors.white,
+                            labelColor:
+                                Theme.of(context).colorScheme.brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                             onTap: (index) {
                               if (index == 0) {
                                 userBloc
