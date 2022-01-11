@@ -8,7 +8,7 @@ Center buildnoItems(BuildContext context) {
     children: [
       Image.asset(
         'assets/images/sad.png',
-        color: Theme.of(context).colorScheme == ColorScheme.light()
+        color: Theme.of(context).colorScheme.brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         height: MediaQuery.of(context).size.height * 0.13,
